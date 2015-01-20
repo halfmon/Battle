@@ -958,11 +958,21 @@ void RenderSceneText( float updateTime )
 		}
 		int HUDX = ViewportWidth - (ViewportWidth / 3);
 		int HUDY = ViewportHeight - (ViewportHeight / 5) + (ViewportHeight / 25) * count;
+		int displayHealth = allyEntity->GetCurrentHealth();
+		if(displayHealth < 0)
+		{
+			displayHealth = 0;
+		}
+		int displayMagic = allyEntity->GetCurrentMagic();
+		if(displayMagic < 0)
+		{
+			displayMagic = 0;
+		}
 		outText << allyEntity->Template()->GetName().c_str() << " "
 			<< allyEntity->GetName().c_str()
-			<< "  |  HP: " << allyEntity->GetCurrentHealth() << "/"
+			<< "  |  HP: " << displayHealth << "/"
 			<< allyEntity->GetTemplate()->GetMaxHealth()
-			<< "  |  MP: " << allyEntity->GetCurrentMagic() << "/"
+			<< "  |  MP: " << displayMagic << "/"
 			<< allyEntity->GetTemplate()->GetMaxMagic();
 		RenderText(outText.str(),HUDX,HUDY,1.0f,1.0f,1.0f,false,HUD);
 		outText.str("");
@@ -991,11 +1001,21 @@ void RenderSceneText( float updateTime )
 		}
 		int HUDX = 0 + (ViewportWidth / 10);
 		int HUDY = ViewportHeight - (ViewportHeight / 5) + (ViewportHeight / 25) * count;
+		int displayHealth = enemyEntity->GetCurrentHealth();
+		if(displayHealth < 0)
+		{
+			displayHealth = 0;
+		}
+		int displayMagic = enemyEntity->GetCurrentMagic();
+		if(displayMagic < 0)
+		{
+			displayMagic = 0;
+		}
 		outText << enemyEntity->Template()->GetName().c_str() << " "
 			<< enemyEntity->GetName().c_str()
-			<< "  |  HP: " << enemyEntity->GetCurrentHealth() << "/"
+			<< "  |  HP: " << displayHealth << "/"
 			<< enemyEntity->GetTemplate()->GetMaxHealth()
-			<< "  |  MP: " << enemyEntity->GetCurrentMagic() << "/"
+			<< "  |  MP: " << displayMagic << "/"
 			<< enemyEntity->GetTemplate()->GetMaxMagic();
 		RenderText(outText.str(),HUDX,HUDY,1.0f,1.0f,1.0f,false,HUD);
 		outText.str("");
