@@ -335,7 +335,48 @@ void CCharEntity::Planning( SMessage msg )
 				m_Defend = true;
 			}
 		}
-		ReacativeAttack(msg);
+		if(!m_Defend)
+		{
+			TEntityUID target;
+
+			if(Template()->GetType() == "enemy")
+			{
+				target = LowestHealthAlly();
+			}
+			else
+			{
+				target = LowestHealthEnemy();
+			}
+
+			int targetHealth = EntityManager.GetCharEntity(target)->GetCurrentHealth();
+			bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
+			int weaknessAttack = 0;
+
+			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+			{
+				if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness() == m_CharTemplate->GetAttack(i).element)
+				{
+					weaknessAttack = i;
+					foeWeakness = true;
+				}
+			}
+			int bestAttack = PickBestAttack(GetTemplate(),targetHealth,m_CurrentMagic);
+
+			if(bestAttack != weaknessAttack)
+			{
+				if(GetTemplate()->GetAttack(weaknessAttack).damage * 2 > GetTemplate()->GetAttack(bestAttack).damage)
+				{
+					m_CurrentAttack = weaknessAttack;
+				}
+				else
+				{
+					m_CurrentAttack = bestAttack;
+				}
+			}
+
+
+			ReacativeAttack(msg);
+		}
 	}
 }
 
@@ -382,7 +423,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 	}
 	if ( msg.attack.element == GetTemplate()->GetWeakness() )
 	{
-		defence *= 2;
+		defence /= 2;
 	}
 	m_CurrentHealth -= static_cast<TInt32>(msg.attack.damage * defence);
 }
