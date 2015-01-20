@@ -230,7 +230,6 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 			m_Defend = true;
 		}
 	}
-	m_Defend = false;
 
 	if(!m_Defend && !UseItem(msg))
 	{
@@ -428,6 +427,8 @@ bool CCharEntity::Update( TFloat32 updateTime )
 					Matrix().SetY(0.0f);
 					m_State = Wait;
 					m_CurrentHealth = GetTemplate()->GetMaxHealth() / 2;
+					AttackOrder.push_back(GetUID());
+					NumTotal++;
 				}
 				break;
 			case Msg_Poison:
@@ -459,7 +460,6 @@ bool CCharEntity::Update( TFloat32 updateTime )
 
 	if (m_State == Act)
 	{
-		//Sleep( 100 );
 		bool attack = false;
 		if( Template()->GetType() == "ally" )
 		{
