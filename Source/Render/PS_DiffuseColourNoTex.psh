@@ -1,0 +1,23 @@
+//-----------------------------------------------------------------------------
+// Global variables
+//-----------------------------------------------------------------------------
+
+// Input to Pixel Shader
+struct PS_Input
+{
+	float4 Position      : POSITION;
+	float3 DiffuseColour : COLOR0;
+};
+
+// Output from Pixel Shader
+struct PS_Output
+{
+	float4 Colour : COLOR0;
+};
+
+// Main pixel shader function
+void main( in PS_Input i, out PS_Output o ) 
+{
+    o.Colour.xyz = i.DiffuseColour;
+    o.Colour.a = 1.0f;
+}

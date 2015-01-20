@@ -1,0 +1,24 @@
+//-----------------------------------------------------------------------------
+// Global variables
+//-----------------------------------------------------------------------------
+
+// All pixels output in this colour
+float4 Colour;
+
+// Input to Pixel Shader
+struct PS_Input
+{
+	float4 Position : POSITION;
+};
+
+// Output from Pixel Shader
+struct PS_Output
+{
+	float4 Colour : COLOR0;
+};
+
+// Main pixel shader function
+void main( in PS_Input i, out PS_Output o ) 
+{
+    o.Colour = Colour;
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<Level>
+  <Templates>
+    <EntityTempate Type="enemy" Name="Troll"   Mesh="troll.x"     HP="100" MP="0"  Strength="60"  Inteligence="10" Speed="30" Attack1="CRUSH" Attack2="CRUSH" Attack3="CRUSH"  Attack4="CRUSH" 
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="BASIC_P" Defence4="BASIC_M"    Weakness="Fire"/>
+    <EntityTempate Type="ally"  Name="Warrior" Mesh="insurgent.x" HP="130" MP="40"  Strength="70" Inteligence="30" Speed="50" Attack1="CRUSH" Attack2="STAB"  Attack3="CUT"    Attack4="FIRE"
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Crush"/>
+    <EntityTempate Type="ally"  Name="Wizard"  Mesh="Casual_A.x"  HP="90"  MP="200" Strength="20" Inteligence="80" Speed="40" Attack1="CRUSH" Attack2="ICE"   Attack3="ARCANE" Attack4="LIGHTNING"
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="PAIN_SPLIT" Defence4="REFLECT" Weakness="Cut"/>
+    <EntityTempate Type="ally"  Name="Archer"  Mesh="sierra.x"    HP="100" MP="100" Strength="60" Inteligence="40" Speed="80" Attack1="STAB"  Attack2="CUT"   Attack3="STAB"   Attack4="FIRE"
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Slash"/>
+  </Templates>
+
+  <Entities>
+    <Entity Type="Troll" Name="1" list="Enemies">
+      <Position X="-5.0" Y="0.0" Z="17.5"/>
+      <Rotation X="0.0" Y="90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Troll" Name="2" list="Enemies">
+      <Position X="-5.0" Y="0.0" Z="12.5"/>
+      <Rotation X="0.0" Y="90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Troll" Name="3" list="Enemies">
+      <Position X="-5.0" Y="0.0" Z="7.5"/>
+      <Rotation X="0.0" Y="90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Troll" Name="4" list="Enemies">
+      <Position X="-10.0" Y="0.0" Z="15.0"/>
+      <Rotation X="0.0" Y="90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Troll" Name="5" list="Enemies">
+      <Position X="-10.0" Y="0.0" Z="10.0"/>
+      <Rotation X="0.0" Y="90.0" Z="0.0"/>
+    </Entity>
+
+    <Entity Type="Warrior" Name="Jerry" list="Allies">
+      <Position X="5.0" Y="0.0" Z="20.0"/>
+      <Rotation X="0.0" Y="-90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Wizard" Name="Tom" list="Allies">
+      <Position X="5.0" Y="0.0" Z="15.0"/>
+      <Rotation X="0.0" Y="-90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Warrior" Name="Thor" list="Allies">
+      <Position X="5.0" Y="0.0" Z="10.0"/>
+      <Rotation X="0.0" Y="-90.0" Z="0.0"/>
+    </Entity>
+    <Entity Type="Archer" Name="Lilo" list="Allies"
+            >
+      <Position X="5.0" Y="0.0" Z="5.0"/>
+      <Rotation X="0.0" Y="-90.0" Z="0.0"/>
+    </Entity>
+  </Entities>
+</Level>

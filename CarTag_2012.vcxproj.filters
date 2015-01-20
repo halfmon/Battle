@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{322d8fdd-c56b-4564-912f-bfe354d199a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{61293564-cc24-4c35-b373-33ed0f13d108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{b73a529a-505b-4c50-b8b7-557ff12299ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Shaders">
+      <UniqueIdentifier>{59f23d40-7026-4fc9-add9-ccc4a5adba5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Import">
+      <UniqueIdentifier>{19cfa24f-ee96-4ecc-9b99-055627d3f6d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{0317a5ca-bfeb-44f0-b908-3b1ad6bf0840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{c2e4b88f-e6fb-4ae2-8ba4-54c427a82aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{0ddf2612-b1cc-478e-a6e0-9a95f2669043}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Scene\Camera.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Entity.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\EntityManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Light.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Messenger.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\CFatalException.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\CHashTable.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\CTimer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\MSDefines.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Utility.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Mesh.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\RenderMethod.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\CImportXFile.cpp">
+      <Filter>Render\Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Input.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\BaseMath.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CMatrix2x2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CMatrix3x3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CMatrix4x4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CQuaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CQuatTransform.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CVector2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CVector3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\CVector4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\MathIO.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MainApp.cpp" />
+    <ClCompile Include="Source\Scene\CharacterEntity.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\tinyxml\xmltest.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\tinyxml\tinyxmlparser.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\tinyxml\tinyxmlerror.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\tinyxml\tinyxml.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\tinyxml\tinystr.cpp">
+      <Filter>XML</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\AttackEffect.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Battle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Scene\Camera.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Entity.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\EntityManager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Light.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Messenger.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\CFatalException.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\CHashTable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\CTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Defines.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Error.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\MSDefines.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Utility.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Mesh.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\RenderMethod.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\CImportXFile.h">
+      <Filter>Render\Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\MeshData.h">
+      <Filter>Render\Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Input.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\BaseMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CMatrix2x2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CMatrix3x3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CMatrix4x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CQuaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CQuatTransform.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CVector2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CVector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\CVector4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\MathDX.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\MathIO.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\CharacterEntity.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Attacks.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\tinyxml\tinyxml.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\tinyxml\tinystr.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Defence.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Items.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Defence.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Vectors.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AntTweakBar\include\AntTweakBar.h" />
+    <ClInclude Include="Source\Scene\AttackEffect.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Battle.h" />
+    <ClInclude Include="Source\Scene\TweakBarButtons.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Render\PS_DiffuseColour.psh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\PS_DiffuseColourNoTex.psh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\PS_OneColour.psh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\PS_TextureOnly.psh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\VS_Simple.vsh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\VS_Texture.vsh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\VS_VertexLighting1.vsh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+    <None Include="Source\Render\VS_VertexLighting1NoTex.vsh">
+      <Filter>Render\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Characters.xml" />
+  </ItemGroup>
+</Project>
