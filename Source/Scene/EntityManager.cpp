@@ -54,9 +54,9 @@ CCharTemplate* CEntityManager::CreateCharTemplate( const string& type, const str
 												   const string& mesh, TInt32 maxHealth, 
 												   TInt32 maxMagic, TInt32 st, TInt32 in, 
 												   TInt32 sp, vector<SAttack> attacks, vector<SDefence> defences,
-												   EElement weakness)
+												   EElement weakness, TInt32 AI)
 {
-	CCharTemplate* newTemplate = new CCharTemplate( type, name, mesh, maxHealth, maxMagic, st, in, sp, attacks, defences, weakness );
+	CCharTemplate* newTemplate = new CCharTemplate( type, name, mesh, maxHealth, maxMagic, st, in, sp, attacks, defences, weakness, AI );
 
 	m_Templates[name] = newTemplate;
 

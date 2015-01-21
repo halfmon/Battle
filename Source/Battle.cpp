@@ -20,7 +20,6 @@ using namespace std;
 #include "Messenger.h"
 #include "Battle.h"
 #include "tinyxml.h"
-#include "TweakBarButtons.h"
 
 namespace gen
 {
@@ -84,7 +83,7 @@ SColourRGBA AmbientLight;
 CLight* Lights[NumLights];
 CCamera* MainCamera;
 
-int AIUsed = 1;
+int generalAI = 1;
 TInt32 NumTotal = 0;
 TiXmlDocument charDoc( "Characters.xml" );
 
@@ -95,9 +94,10 @@ extern TwBar* itemBar;
 int enemyItem = 0;
 int allyItem = 0;
 
-bool debug = false; //Decide if information used when debugging is show or not
+bool debugInfoOn = false; //Decide if information used when debugging is show or not
 bool started = false;
 bool effectOn = true;
+bool templateAIOn = false;
 
 //-----------------------------------------------------------------------------
 // Game Helper functions
@@ -319,7 +319,26 @@ void SetUpAttackOrder()
 		}
 	}
 }
+void CleanAttackOrder()
+{
+	vector<int> deadPos;
+	for(int i = 0; i < AttackOrder.size(); i++)
+	{
+		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
+		{
+			deadPos.push_back(i);
+		}
+	}
 
+	for(int i =0; i < deadPos.size(); i++)
+	{
+		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
+		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
+		NumTotal--;
+	}
+}
+
+// Functions for getting the required variable type when reading in from an XML file.
 SAttack stringToAttack ( string attack )
 {
 	if ( attack == "CUT" )
@@ -438,25 +457,6 @@ EElement stringToWeakness ( string weakness )
 	}
 }
 
-void CleanAttackOrder()
-{
-	vector<int> deadPos;
-	for(int i = 0; i < AttackOrder.size(); i++)
-	{
-		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
-		{
-			deadPos.push_back(i);
-		}
-	}
-
-	for(int i =0; i < deadPos.size(); i++)
-	{
-		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
-		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
-		NumTotal--;
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Scene management
 //-----------------------------------------------------------------------------
@@ -506,7 +506,10 @@ void TemplateSetup()
 
 		EElement weak = stringToWeakness( pElem->Attribute("Weakness") );
 
-		EntityManager.CreateCharTemplate( type, name, mesh, HP, MP, st, in, sp, templateAttacks, templateDefences, weak );
+		TInt32 AI;
+		pElem->QueryIntAttribute("AI", &AI);
+
+		EntityManager.CreateCharTemplate( type, name, mesh, HP, MP, st, in, sp, templateAttacks, templateDefences, weak, AI );
 	}
 }
 // Setup Character entities using XML
@@ -595,14 +598,6 @@ void TW_CALL ResetChar(void* clientData)
 	started = false;
 
 	attackEffect.Reset();
-}
-void TW_CALL SwitchDebug(void* clientData)
-{
-	debug = !debug;
-}
-void TW_CALL SwitchEffect(void* clientData)
-{
-	effectOn = !effectOn;
 }
 
 void TW_CALL AddPotionE(void* clientData)
@@ -731,31 +726,35 @@ void TW_CALL InventoryRandom(void* clientData)
 void TweakBarSetup()
 {
 	myBar = TwNewBar( "Tweak Bar" );
-	TwAddVarRW(myBar, "AI Used", TW_TYPE_INT32, &AIUsed, "min=1 max=3" );
-	TwAddButton( myBar, "Start", StartRound, NULL, "");
-	TwAddButton( myBar, "Reset Characters", ResetChar, NULL, "");
-	TwAddButton( myBar, "Debug", SwitchDebug, NULL, "");
-	TwAddButton( myBar, "Attack Effect", SwitchEffect, NULL, "");
+	TwAddVarRW ( myBar, "AI Used",          TW_TYPE_INT32,   &generalAI,    "min=1 max=3" );
+	TwAddButton( myBar, "Start",            StartRound,      NULL,          "" );
+	TwAddButton( myBar, "Reset Characters", ResetChar,       NULL,          "" );
+	TwAddVarRW ( myBar, "Debug Info",       TW_TYPE_BOOLCPP, &debugInfoOn,  "" );
+	TwAddVarRW ( myBar, "Attack Effect",    TW_TYPE_BOOLCPP, &effectOn,     "" );
+	TwAddVarRW ( myBar, "Template AI",      TW_TYPE_BOOLCPP, &templateAIOn, "" );
 
 	itemBar = TwNewBar( "Item modifier" );
-	TwAddVarRW(itemBar, "Enemy", TW_TYPE_INT32, &enemyItem, "min=0 max=4" );
-	TwAddButton( itemBar, "E Add Potion", AddPotionE, NULL, "");
-	TwAddButton( itemBar, "E Add Super Potion", AddSuperPotionE, NULL, "");
-	TwAddButton( itemBar, "E Add Magic Potion", AddMagicPotionE, NULL, "");
-	TwAddButton( itemBar, "E Add Super Magic Potion", AddSuperMagicPotionE, NULL, "");
-	TwAddButton( itemBar, "E Add Venom", AddVenomE, NULL, "");
-	TwAddButton( itemBar, "E Add Revive", AddReviveE, NULL, "");
+	TwAddButton( itemBar, "Fill Inventory", InventoryRandom, NULL, "");
+
+	TwAddSeparator(itemBar,"Enemies",NULL);
+
+	TwAddVarRW ( itemBar, "Enemy",                    TW_TYPE_INT32,        &enemyItem, "min=0 max=4 group='Enemy Item Management'" );
+	TwAddButton( itemBar, "E Add Potion",             AddPotionE,           NULL,       "group='Enemy Item Management'");
+	TwAddButton( itemBar, "E Add Super Potion",       AddSuperPotionE,      NULL,       "group='Enemy Item Management'");
+	TwAddButton( itemBar, "E Add Magic Potion",       AddMagicPotionE,      NULL,       "group='Enemy Item Management'");
+	TwAddButton( itemBar, "E Add Super Magic Potion", AddSuperMagicPotionE, NULL,       "group='Enemy Item Management'");
+	TwAddButton( itemBar, "E Add Venom",              AddVenomE,            NULL,       "group='Enemy Item Management'");
+	TwAddButton( itemBar, "E Add Revive",             AddReviveE,           NULL,       "group='Enemy Item Management'");
+
 	TwAddSeparator( itemBar, "Allies", NULL );
-	TwAddVarRW( itemBar, "Ally", TW_TYPE_INT32, &allyItem, "min=0 max=3" );
-	TwAddVarRW( itemBar, "Enemy", TW_TYPE_INT32, &enemyItem, "min=0 max=5" );
-	TwAddButton( itemBar, "A Add Potion", AddPotionA, NULL, "");
-	TwAddButton( itemBar, "A Add Super Potion", AddSuperPotionA, NULL, "");
-	TwAddButton( itemBar, "A Add Magic Potion", AddMagicPotionA, NULL, "");
-	TwAddButton( itemBar, "A Add Super Magic Potion", AddSuperMagicPotionA, NULL, "");
-	TwAddButton( itemBar, "A Add Venom", AddVenomA, NULL, "");
-	TwAddButton( itemBar, "A Add Revive", AddReviveA, NULL, "");
-	TwAddSeparator( itemBar, "Fill inventory", NULL );
-	TwAddButton( itemBar, "Fill Inventory", InventoryRandom, NULL, "" );
+
+	TwAddVarRW ( itemBar, "Ally",                     TW_TYPE_INT32,        &allyItem, "min=0 max=3 group='Ally Item Management'" );
+	TwAddButton( itemBar, "A Add Potion",             AddPotionA,           NULL,      "group='Ally Item Management'");
+	TwAddButton( itemBar, "A Add Super Potion",       AddSuperPotionA,      NULL,      "group='Ally Item Management'");
+	TwAddButton( itemBar, "A Add Magic Potion",       AddMagicPotionA,      NULL,      "group='Ally Item Management'");
+	TwAddButton( itemBar, "A Add Super Magic Potion", AddSuperMagicPotionA, NULL,      "group='Ally Item Management'");
+	TwAddButton( itemBar, "A Add Venom",              AddVenomA,            NULL,      "group='Ally Item Management'");
+	TwAddButton( itemBar, "A Add Revive",             AddReviveA,           NULL,      "group='Ally Item Management'");
 }
 
 // Creates the scene geometry
@@ -932,9 +931,12 @@ void RenderSceneText( float updateTime )
 {
 	// Write FPS text string
 	stringstream outText;
-	outText << "Frame Time: " << updateTime * 1000.0f << "ms" << endl << "FPS:" << 1.0f / updateTime;
-	RenderText( outText.str(), 0, 0, 1.0f, 1.0f, 0.0f );
-	outText.str("");
+	if( debugInfoOn )
+	{
+		outText << "Frame Time: " << updateTime * 1000.0f << "ms" << endl << "FPS:" << 1.0f / updateTime;
+		RenderText(outText.str(),0,0,1.0f,1.0f,0.0f);
+		outText.str("");
+	}
 
 	int count = 0;
 
@@ -949,7 +951,7 @@ void RenderSceneText( float updateTime )
 		int X, Y;
 		if (MainCamera->PixelFromWorldPt( allyPt, ViewportWidth, ViewportHeight, &X, &Y ))
 		{
-			if ( debug )
+			if ( debugInfoOn )
 			{
 				RenderText( "Attack: "  + allyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + allyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
@@ -992,7 +994,7 @@ void RenderSceneText( float updateTime )
 		int X, Y;
 		if (MainCamera->PixelFromWorldPt( enemyPt, ViewportWidth, ViewportHeight, &X, &Y ))
 		{
-			if ( debug )
+			if( debugInfoOn )
 			{
 				RenderText( "Attack: "  + enemyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + enemyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
@@ -1078,15 +1080,15 @@ void UpdateScene( float updateTime )
 
 	if (KeyHit( Key_1 ))
 	{
-		AIUsed = 1;
+		generalAI = 1;
 	}
 	if (KeyHit( Key_2 ))
 	{
-		AIUsed = 2;
+		generalAI = 2;
 	}
 	if (KeyHit( Key_3 ))
 	{
-		AIUsed = 3;
+		generalAI = 3;
 	}
 
 	if(KeyHit(Key_0))
@@ -1096,7 +1098,17 @@ void UpdateScene( float updateTime )
 		Messenger.SendMessage(Enemies[enemyItem],msg);
 	}
 
-	//CleanAttackOrder();
+	CleanAttackOrder();
+
+	if(!AllyAlive() || !EnemyAlive())
+	{
+		SMessage msg;
+		msg.type = Msg_Stop;
+		for(auto it = AttackOrder.begin(); it != AttackOrder.end(); it++)
+		{
+			Messenger.SendMessage( *it, msg );
+		}
+	}
 
 	// Move the camera
 	//MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 

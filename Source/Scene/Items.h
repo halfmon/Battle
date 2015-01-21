@@ -20,11 +20,11 @@ struct SItem
 	TInt32 value;
 };
 
-const SItem POTION = { "Potion", restoreHealth, 20 };
-const SItem SUPER_POTION = { "Potion", restoreHealth, 50 };
+const SItem POTION = { "Potion", restoreHealth, 30 };
+const SItem SUPER_POTION = { "Super Potion", restoreHealth, 70 };
 
 const SItem MAGIC_POTION = { "Magic Potion", restoreMana, 40 };
-const SItem SUPER_MAGIC_POTION = { "Super Magic Potion", restoreMana, 70 };
+const SItem SUPER_MAGIC_POTION = { "Super Magic Potion", restoreMana, 90 };
 
 const SItem VENOM = { "Venom", poison, 10 };
 

@@ -29,9 +29,10 @@ extern vector<TEntityUID> Allies;
 extern vector<TEntityUID> Enemies;
 extern vector<TEntityUID> AttackOrder;
 
-extern int AIUsed;
+extern int generalAI;
 extern TInt32 NumTotal;
 extern bool effectOn;
+extern bool templateAIOn;
 
 extern TEntityUID LowestHealthAlly();
 extern TEntityUID LowestHealthEnemy();
@@ -42,6 +43,8 @@ extern TEntityUID LowestMagicEnemy();
 extern TEntityUID DeadEnemy();
 extern TEntityUID DeadAlly();
 
+/* Picks the best attack based only on the damage value of the attack. If two attacks could kill the target based on the attacks damage it will choose the 
+attack that cost the least if it is magical. */
 TInt32 PickBestAttack( CCharTemplate* attackList, TInt32 targetHealth, TInt32 attackerMagic )
 {
 	SAttack bestAttack = attackList->GetAttack(0);
@@ -108,6 +111,7 @@ CCharEntity::CCharEntity
 	m_DefendLast = false;
 }
 
+// Used to get a string of the attack for outputing the name of the attack
 string CCharEntity::GetAttackElement()
 {
 	if ( m_CurrentAttack == -1 )
@@ -148,6 +152,7 @@ string CCharEntity::GetAttackElement()
 		return "???";
 	}
 }
+// Used to get a string for the output of whether or not the character is defending
 string CCharEntity::GetDefenceInfo()
 {
 	if ( m_CurrentDefence == -1 )
@@ -162,6 +167,7 @@ string CCharEntity::GetDefenceInfo()
 
 void CCharEntity::RandomAttack( SMessage msg )
 {
+	// Choosing Attack
 	m_CurrentAttack = Random(0, m_CharTemplate->GetAttackNum() - 1);
 	if ( m_CharTemplate->GetAttack(m_CurrentAttack).type == Magical )
 	{
@@ -178,6 +184,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 		}
 	}
 
+	// Choosing Target
 	TEntityUID target;
 	if( Template()->GetType() == "enemy" )
 	{
@@ -187,6 +194,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 	{
 		target = RandomEnemy();
 	}
+
 	msg.type = Msg_Attacked;
 	if(msg.attack.type == Physical)
 	{
@@ -231,6 +239,7 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 			} while ( m_CurrentMagic - cost < 0 );
 			m_CurrentDefence = chance;
 			m_Defend = true;
+			m_CurrentMagic -= cost;
 		}
 	}
 
@@ -352,15 +361,18 @@ void CCharEntity::Planning( SMessage msg )
 					do
 					{
 						m_CurrentDefence = Random(0,m_CharTemplate->GetDefenceNum()-1);
-					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Physical);
+					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Physical 
+						    && m_CharTemplate->GetDefence(m_CurrentDefence).type != Both);
 				}
 				else
 				{
 					do
 					{
 						m_CurrentDefence = Random(0,m_CharTemplate->GetDefenceNum()-1);
-					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Magical);
+					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Magical 
+						    && m_CharTemplate->GetDefence(m_CurrentDefence).type != Both);
 				}
+				m_CurrentMagic -= m_CharTemplate->GetDefence(m_CurrentDefence).cost;
 
 				m_Defend = true;
 				m_DefendLast = true;
@@ -433,7 +445,31 @@ void CCharEntity::Planning( SMessage msg )
 
 			if(bestAttack != weaknessAttack)
 			{
-				if((m_CharTemplate->GetAttack(weaknessAttack).damage * 2 > m_CharTemplate->GetAttack(bestAttack).damage) && targetWeakness)
+				SAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
+				SAttack bestA = m_CharTemplate->GetAttack(bestAttack);
+
+				float weaknessDamage = weaknessA.damage * 2;
+				float bestDamage = bestA.damage;
+
+				if(weaknessA.type == Physical)
+				{
+					weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+				}
+				else
+				{
+					weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+				}
+
+				if(bestA.type == Physical)
+				{
+					bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+				}
+				else
+				{
+					bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+				}
+
+				if((weaknessDamage > bestDamage) && targetWeakness)
 				{
 					m_CurrentAttack = weaknessAttack;
 				}
@@ -483,20 +519,20 @@ void CCharEntity::Planning( SMessage msg )
 	m_State = Wait;
 }
 
+//The cost of defence is decided when it is chosen so the check is not needed for the cost.
 void CCharEntity::TakingDamage( SMessage msg )
 {
-	float defence = 1.0f;
+	float defence = 1.0f;  //A modifier for the damage taken by the character.
 	if ( m_Defend )
 	{
 		SDefence pick = m_CharTemplate->GetDefence(m_CurrentDefence);
 		if ( pick.type == Regular )
 		{
-			if ( pick.attackRecivedType == msg.attack.type )
+			if ( pick.attackRecivedType == msg.attack.type || pick.attackRecivedType == Both )
 			{
 				if ( pick.element == None || pick.element == msg.attack.element )
 				{
-					defence = pick.modifier;
-					m_CurrentMagic -= pick.cost;
+						defence = pick.modifier;
 				}
 			}
 		}
@@ -508,7 +544,6 @@ void CCharEntity::TakingDamage( SMessage msg )
 				msg.attack.damage *= pick.modifier;
 				msg.from = GetUID();
 				Messenger.SendMessage( from, msg );
-				m_CurrentMagic -= pick.cost;
 		}
 		else if ( pick.type == PainSplit )
 		{
@@ -518,7 +553,6 @@ void CCharEntity::TakingDamage( SMessage msg )
 				msg.attack.damage *= pick.modifier;
 				msg.from = GetUID();
 				Messenger.SendMessage( from, msg );
-				m_CurrentMagic -= pick.cost;
 		}
 
 		m_Defend = false;
@@ -538,6 +572,9 @@ bool CCharEntity::Update( TFloat32 updateTime )
 	{
 		switch (msg.type)
 		{
+			case Msg_Stop:
+				m_State = Wait;
+				break;
 			case Msg_Act:
 				if (m_State != Dead)
 				{
@@ -615,6 +652,16 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		}
 		if ( attack )
 		{
+			int AIUsed;
+			if(templateAIOn)
+			{
+				AIUsed = m_CharTemplate->GetAI();
+			}
+			else
+			{
+				AIUsed = generalAI;
+			}
+
 			if ( AIUsed == 1 )
 			{
 				RandomAttack( msg );

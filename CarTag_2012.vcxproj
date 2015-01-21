@@ -153,8 +153,7 @@
     <ClCompile Include="Source\MainApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\AntTweakBar\include\AntTweakBar.h" />
-    <ClInclude Include="Source\Defence.h" />
+    <ClInclude Include="Source\AntTweakBar.h" />
     <ClInclude Include="Source\Scene\AttackEffect.h" />
     <ClInclude Include="Source\Scene\Attacks.h" />
     <ClInclude Include="Source\Scene\Camera.h" />
@@ -176,8 +175,6 @@
     <ClInclude Include="Source\Render\RenderMethod.h" />
     <ClInclude Include="Source\Render\CImportXFile.h" />
     <ClInclude Include="Source\Render\MeshData.h" />
-    <ClInclude Include="Source\Scene\TweakBarButtons.h" />
-    <ClInclude Include="Source\Scene\Vectors.h" />
     <ClInclude Include="Source\tinyxml\tinystr.h" />
     <ClInclude Include="Source\tinyxml\tinyxml.h" />
     <ClInclude Include="Source\UI\Input.h" />

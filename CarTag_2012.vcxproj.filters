@@ -226,20 +226,11 @@
     <ClInclude Include="Source\Scene\Items.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Defence.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\Vectors.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\AntTweakBar\include\AntTweakBar.h" />
     <ClInclude Include="Source\Scene\AttackEffect.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Battle.h" />
-    <ClInclude Include="Source\Scene\TweakBarButtons.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
+    <ClInclude Include="Source\AntTweakBar.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Render\PS_DiffuseColour.psh">

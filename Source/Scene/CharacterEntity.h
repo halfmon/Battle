@@ -31,15 +31,15 @@ const TInt32 NumInvantory = 5;
 -------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------*/
 
-class CCharTemplate : public CEntityTemplate
+class CCharTemplate: public CEntityTemplate
 {
 public:
 	CCharTemplate
-	(
-		const string& type, const string& name, const string& meshFilename,
-		TInt32 maxHealth, TInt32 maxMagic, TInt32 st, TInt32 in, TInt32 sp,
-		vector<SAttack> attacks, vector<SDefence> defences, EElement weak
-	) : CEntityTemplate( type, name, meshFilename )
+		(
+		const string& type,const string& name,const string& meshFilename,
+		TInt32 maxHealth,TInt32 maxMagic,TInt32 st,TInt32 in,TInt32 sp,
+		vector<SAttack> attacks,vector<SDefence> defences,EElement weak,TInt32 AI
+		): CEntityTemplate(type,name,meshFilename)
 	{
 		m_MaxHealth = maxHealth;
 		m_MaxMagic = maxMagic;
@@ -47,19 +47,20 @@ public:
 		m_Stats.intelligence = in;
 		m_Stats.speed = sp;
 		m_Weakness = weak;
+		m_AI = AI;
 
-		for (int i = 0; i < NumAttacks; i++)
+		for(int i = 0; i < NumAttacks; i++)
 		{
-			m_Attacks.push_back( attacks[i] );
+			m_Attacks.push_back(attacks[i]);
 		}
-		for (int i = 0; i < NumDefences; i++)
+		for(int i = 0; i < NumDefences; i++)
 		{
-			m_Defences.push_back( defences[i] );
+			m_Defences.push_back(defences[i]);
 		}
 	}
 
-/////////////////////////////////////
-//	Private interface
+	/////////////////////////////////////
+	//	Private interface
 private:
 	TInt32 m_MaxHealth;
 	TInt32 m_MaxMagic;
@@ -75,10 +76,11 @@ private:
 	vector<SAttack> m_Attacks;
 	vector<SDefence> m_Defences;
 	EElement m_Weakness;
+	TInt32 m_AI;
 
 
-/////////////////////////////////////
-//	Public interface
+	/////////////////////////////////////
+	//	Public interface
 public:
 
 	/////////////////////////////////////
@@ -105,11 +107,12 @@ public:
 	{
 		return m_Stats.speed;
 	}
-	SAttack GetAttack( int i )
+
+	SAttack GetAttack(int i)
 	{
 		return m_Attacks[i];
 	}
-	SDefence GetDefence( int i )
+	SDefence GetDefence(int i)
 	{
 		return m_Defences[i];
 	}
@@ -121,10 +124,16 @@ public:
 	{
 		return m_Defences.size();
 	}
+
 	EElement GetWeakness()
 	{
 		return m_Weakness;
+	};
+	TInt32 GetAI()
+	{
+		return m_AI;
 	}
+
 };
 
 class CCharEntity : public CEntity

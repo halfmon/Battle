@@ -3,13 +3,13 @@
 <Level>
   <Templates>
     <EntityTempate Type="enemy" Name="Troll"   Mesh="troll.x"     HP="100" MP="0"  Strength="50"  Inteligence="10" Speed="30" Attack1="CRUSH" Attack2="CRUSH" Attack3="CRUSH"  Attack4="CRUSH" 
-                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="BASIC_P" Defence4="BASIC_M"    Weakness="Fire"/>
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="BASIC_P" Defence4="BASIC_M"    Weakness="Fire"  AI="1"/>
     <EntityTempate Type="ally"  Name="Warrior" Mesh="insurgent.x" HP="130" MP="40"  Strength="70" Inteligence="30" Speed="50" Attack1="CRUSH" Attack2="STAB"  Attack3="CUT"    Attack4="FIRE"
-                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Crush"/>
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Crush" AI="3"/>
     <EntityTempate Type="ally"  Name="Wizard"  Mesh="Casual_A.x"  HP="90"  MP="200" Strength="20" Inteligence="80" Speed="40" Attack1="CRUSH" Attack2="ICE"   Attack3="ARCANE" Attack4="LIGHTNING"
-                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="PAIN_SPLIT" Defence4="REFLECT" Weakness="Cut"/>
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="PAIN_SPLIT" Defence4="REFLECT" Weakness="Cut"   AI="3"/>
     <EntityTempate Type="ally"  Name="Archer"  Mesh="sierra.x"    HP="100" MP="100" Strength="60" Inteligence="40" Speed="80" Attack1="STAB"  Attack2="CUT"   Attack3="STAB"   Attack4="FIRE"
-                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Slash"/>
+                   Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Slash" AI="3"/>
   </Templates>
 
   <Entities>
