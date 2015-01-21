@@ -34,6 +34,11 @@ public:
 	void StartAttack( CVector3 targetPos, CVector3 attackerPos, TEntityUID target, SMessage msg );
 
 	void Reset();
+
+	TEntityUID getTarget()
+	{
+		return m_Target;
+	}
 };
 
 }

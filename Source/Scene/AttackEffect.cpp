@@ -28,8 +28,8 @@ void CAttackEffect::Update( TFloat32 updateTime )
 {
 	if ( m_State == Active )
 	{
-		CEntity * attack = EntityManager.GetEntity(m_Effect);
-		attack->Matrix().FaceTarget( m_TargetPos );
+		CEntity* attack = EntityManager.GetEntity(m_Effect);
+		//attack->Matrix().FaceTarget( m_TargetPos );
 		attack->Matrix().MoveLocalZ( ATTACK_SPEED * updateTime );
 
 		if( attack->Matrix().GetX() - m_TargetPos.x < 0.2f && attack->Matrix().GetZ() - m_TargetPos.z < 0.2f )
@@ -51,15 +51,15 @@ void CAttackEffect::Update( TFloat32 updateTime )
 void CAttackEffect::StartAttack( CVector3 targetPos, CVector3 attackerPos, TEntityUID target, SMessage msg )
 {
 	m_TargetPos = targetPos;
+	m_TargetPos.y += 1;
 	m_Target = target;
 	attackerPos.y += 1;
 	EntityManager.GetEntity(m_Effect)->Matrix().SetPosition( attackerPos );
+	EntityManager.GetEntity(m_Effect)->Matrix().FaceTarget( m_TargetPos );
 	m_MSG = msg;
 	m_State = Active;
 
-	m_TargetPos.y += 1;
-
-	switch( msg.attack.element )
+	/*switch( msg.attack.element )
 	{
 	case Cut:
 		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Cut.png" );
@@ -82,7 +82,7 @@ void CAttackEffect::StartAttack( CVector3 targetPos, CVector3 attackerPos, TEnti
 	case Arcane:
 		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Arcane.png" );
 		break;
-	}
+	}*/
 }
 
 void CAttackEffect::Reset()

@@ -936,6 +936,10 @@ void RenderSceneText( float updateTime )
 		outText << "Frame Time: " << updateTime * 1000.0f << "ms" << endl << "FPS:" << 1.0f / updateTime;
 		RenderText(outText.str(),0,0,1.0f,1.0f,0.0f);
 		outText.str("");
+
+		outText<< "Attack Effect Taraget: " << EntityManager.GetCharEntity(attackEffect.getTarget())->Template()->GetName() << " " << EntityManager.GetCharEntity(attackEffect.getTarget())->GetName();
+		RenderText(outText.str(),ViewportWidth/2,0,1.0f,1.0f,1.0f,true,End);
+		outText.str("");
 	}
 
 	int count = 0;
