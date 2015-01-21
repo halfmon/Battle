@@ -2,7 +2,7 @@
 
 <Level>
   <Templates>
-    <EntityTempate Type="enemy" Name="Troll"   Mesh="troll.x"     HP="100" MP="0"  Strength="60"  Inteligence="10" Speed="30" Attack1="CRUSH" Attack2="CRUSH" Attack3="CRUSH"  Attack4="CRUSH" 
+    <EntityTempate Type="enemy" Name="Troll"   Mesh="troll.x"     HP="100" MP="0"  Strength="50"  Inteligence="10" Speed="30" Attack1="CRUSH" Attack2="CRUSH" Attack3="CRUSH"  Attack4="CRUSH" 
                    Defence1="BASIC_P" Defence2="BASIC_M" Defence3="BASIC_P" Defence4="BASIC_M"    Weakness="Fire"/>
     <EntityTempate Type="ally"  Name="Warrior" Mesh="insurgent.x" HP="130" MP="40"  Strength="70" Inteligence="30" Speed="50" Attack1="CRUSH" Attack2="STAB"  Attack3="CUT"    Attack4="FIRE"
                    Defence1="BASIC_P" Defence2="BASIC_M" Defence3="ADV_P"   Defence4="ADV_M"      Weakness="Crush"/>

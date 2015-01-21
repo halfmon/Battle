@@ -1,19 +1,21 @@
-﻿Build started 20/01/2015 11:30:01.
+﻿Build started 20/01/2015 12:47:07.
      1>Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ISource\AntTweakBar\lib /ISource\AntTweakBar\include /ISource\tinyxml /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /Gm /EHsc /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Scene\CharacterEntity.cpp
          CharacterEntity.cpp
      1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(191): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
      1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(196): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(275): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(279): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(293): warning C4553: '==' : operator has no effect; did you intend '='?
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(447): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(455): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(503): warning C4244: '*=' : conversion from 'float' to 'gen::TInt32', possible loss of data
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(517): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(543): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(635): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(274): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(278): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(291): warning C4553: '==' : operator has no effect; did you intend '='?
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(369): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(373): warning C4244: '=' : conversion from 'gen::TInt32' to 'gen::TFloat32', possible loss of data
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(506): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(514): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(561): warning C4244: '*=' : conversion from 'float' to 'gen::TInt32', possible loss of data
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(575): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(601): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\dlriley\desktop\battle - copy\source\scene\characterentity.cpp(693): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DLRiley\Desktop\Battle - Copy\Debug\Battle.exe" /INCREMENTAL /NOLOGO d3dxof.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DLRiley\Desktop\Battle - Copy\Debug\CarTag.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\DLRiley\Desktop\Battle - Copy\Debug\Battle.lib" /MACHINE:X86 /SAFESEH:NO /IGNORE:4089 Debug\AttackEffect.obj
          Debug\Camera.obj
@@ -48,9 +50,9 @@
          Debug\MathIO.obj
          Debug\Battle.obj
          Debug\MainApp.obj
-         CarTag_2012.vcxproj -> C:\Users\DLRiley\Desktop\Battle - Copy\Debug\Battle.exe
-     1>Done Building Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" (Build target(s)).
+     1>LINK : fatal error LNK1201: error writing to program database 'C:\Users\DLRiley\Desktop\Battle - Copy\Debug\CarTag.pdb'; check for insufficient disk space, invalid path, or insufficient privilege
+     1>Done Building Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:01.41
+Time Elapsed 00:00:01.48

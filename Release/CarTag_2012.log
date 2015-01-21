@@ -1,11 +1,16 @@
-﻿Build started 20/01/2015 10:12:02.
-     1>Project "C:\Users\DLRiley\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Build target(s)).
+﻿Build started 21/01/2015 09:19:27.
+     1>Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (CarTag.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Battle.cpp
-         Battle.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Scene\CharacterEntity.cpp
+         CharacterEntity.cpp
+     1>Source\Scene\CharacterEntity.cpp(592): warning C4018: '<' : signed/unsigned mismatch
+     1>Source\Scene\CharacterEntity.cpp(600): warning C4018: '<' : signed/unsigned mismatch
+     1>Source\Scene\CharacterEntity.cpp(661): warning C4018: '<' : signed/unsigned mismatch
+     1>Source\Scene\CharacterEntity.cpp(687): warning C4018: '<' : signed/unsigned mismatch
+     1>Source\Scene\CharacterEntity.cpp(780): warning C4018: '<' : signed/unsigned mismatch
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
          Release\Camera.obj
          Release\CharacterEntity.obj
          Release\Entity.obj
@@ -38,9 +43,9 @@
          Release\MathIO.obj
          Release\Battle.obj
          Release\MainApp.obj
-         CarTag_2012.vcxproj -> C:\Users\DLRiley\Desktop\Battle\Release\Battle.exe
-     1>Done Building Project "C:\Users\DLRiley\Desktop\Battle\CarTag_2012.vcxproj" (Build target(s)).
+         CarTag_2012.vcxproj -> C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.exe
+     1>Done Building Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.88
+Time Elapsed 00:00:01.64

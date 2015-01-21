@@ -175,8 +175,7 @@ private:
 
 	vector<SInventoryItem> m_Inventory;
 
-	TFloat32 m_ActMovement;
-	TFloat32 m_Wait;
+	bool m_DefendLast; // A bool to decide if the character defended last turn and alter the chance of defending for the next turn
 
 	TInt32 m_CurrentAttack;
 	TInt32 m_CurrentDefence;

@@ -1096,7 +1096,7 @@ void UpdateScene( float updateTime )
 		Messenger.SendMessage(Enemies[enemyItem],msg);
 	}
 
-	CleanAttackOrder();
+	//CleanAttackOrder();
 
 	// Move the camera
 	//MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
