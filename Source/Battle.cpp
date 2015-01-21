@@ -319,24 +319,24 @@ void SetUpAttackOrder()
 		}
 	}
 }
-void CleanAttackOrder()
-{
-	vector<int> deadPos;
-	for(int i = 0; i < AttackOrder.size(); i++)
-	{
-		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
-		{
-			deadPos.push_back(i);
-		}
-	}
-
-	for(int i =0; i < deadPos.size(); i++)
-	{
-		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
-		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
-		NumTotal--;
-	}
-}
+//void CleanAttackOrder()
+//{
+//	vector<int> deadPos;
+//	for(int i = 0; i < AttackOrder.size(); i++)
+//	{
+//		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
+//		{
+//			deadPos.push_back(i);
+//		}
+//	}
+//
+//	for(int i =0; i < deadPos.size(); i++)
+//	{
+//		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
+//		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
+//		NumTotal--;
+//	}
+//}
 
 // Functions for getting the required variable type when reading in from an XML file.
 SAttack stringToAttack ( string attack )
@@ -659,32 +659,32 @@ void TW_CALL InventoryRandom(void* clientData)
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddPotionE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddSuperPotionE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_POTION);
 		}
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddMagicPotionE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(MAGIC_POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddSuperMagicPotionE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_MAGIC_POTION);
 		}
 		itemNum = Random(0,10);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddVenomE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(VENOM);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddReviveE(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(REVIVE);
 		}
 	}
 
@@ -693,32 +693,32 @@ void TW_CALL InventoryRandom(void* clientData)
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddPotionA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddSuperPotionA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_POTION);
 		}
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddMagicPotionA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(MAGIC_POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddSuperMagicPotionA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_MAGIC_POTION);
 		}
 		itemNum = Random(0,10);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddVenomA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(VENOM);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			AddReviveA(NULL);
+			EntityManager.GetCharEntity(*it)->AddItemToInvantory(REVIVE);
 		}
 	}
 }
@@ -955,7 +955,7 @@ void RenderSceneText( float updateTime )
 			{
 				RenderText( "Attack: "  + allyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + allyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
-				RenderText( "Items: "   + allyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
+				//RenderText( "Items: "   + allyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
 			}
 		}
 		int HUDX = ViewportWidth - (ViewportWidth / 3);
@@ -1097,8 +1097,6 @@ void UpdateScene( float updateTime )
 		msg.type = Msg_Poison;
 		Messenger.SendMessage(Enemies[enemyItem],msg);
 	}
-
-	CleanAttackOrder();
 
 	if(!AllyAlive() || !EnemyAlive())
 	{

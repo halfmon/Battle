@@ -1,13 +1,9 @@
 #include "AttackEffect.h"
 #include "EntityManager.h"
+#include "Externals.h"
 
 namespace gen
 {
-extern CEntityManager EntityManager;
-extern CMessenger Messenger;
-
-extern TInt32 NumTotal;
-extern vector<TEntityUID> AttackOrder;
 
 CAttackEffect::CAttackEffect(void)
 {

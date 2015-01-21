@@ -8,40 +8,10 @@
 #include "EntityManager.h"
 #include "Messenger.h"
 #include "AttackEffect.h"
+#include "Externals.h"
 
 namespace gen
 {
-
-extern CEntityManager EntityManager;
-extern CMessenger Messenger;
-extern CAttackEffect attackEffect;
-
-extern TEntityUID RandomEnemy();
-extern TEntityUID RandomAlly();
-extern bool EnemyAlive();
-extern bool AllyAlive();
-
-extern TUInt32 ViewportWidth;
-extern TUInt32 ViewportHeight;
-extern CCamera* MainCamera;
-
-extern vector<TEntityUID> Allies;
-extern vector<TEntityUID> Enemies;
-extern vector<TEntityUID> AttackOrder;
-
-extern int generalAI;
-extern TInt32 NumTotal;
-extern bool effectOn;
-extern bool templateAIOn;
-
-extern TEntityUID LowestHealthAlly();
-extern TEntityUID LowestHealthEnemy();
-
-extern TEntityUID LowestMagicAlly();
-extern TEntityUID LowestMagicEnemy();
-
-extern TEntityUID DeadEnemy();
-extern TEntityUID DeadAlly();
 
 /* Picks the best attack based only on the damage value of the attack. If two attacks could kill the target based on the attacks damage it will choose the 
 attack that cost the least if it is magical. */
@@ -186,7 +156,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 
 	// Choosing Target
 	TEntityUID target;
-	if( Template()->GetType() == "enemy" )
+	if( m_CharTemplate->GetType() == "enemy" )
 	{
 		target = RandomAlly();
 	}
@@ -196,14 +166,13 @@ void CCharEntity::RandomAttack( SMessage msg )
 	}
 
 	msg.type = Msg_Attacked;
+	msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
 	if(msg.attack.type == Physical)
 	{
-		msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
 		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
 	}
 	else
 	{
-		msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
 		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
 	}
 	msg.from = GetUID();
@@ -218,7 +187,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 		msg.order++;
 		if(msg.order >= NumTotal)
 		{
-		msg.order = 0;
+			msg.order = 0;
 		}
 		Messenger.SendMessage(AttackOrder[msg.order],msg);
 	}
@@ -608,8 +577,6 @@ bool CCharEntity::Update( TFloat32 updateTime )
 					Matrix().SetY(0.0f);
 					m_State = Wait;
 					m_CurrentHealth = m_CharTemplate->GetMaxHealth() / 2;
-					AttackOrder.push_back(GetUID());
-					NumTotal++;
 				}
 				break;
 			case Msg_Poison:
@@ -625,18 +592,28 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		m_State = Dead;
 	}
 
-	vector<int> none;
-	for ( int i = 0; i < m_Inventory.size(); i++ )
+	if( m_Inventory.size() > 0 )
 	{
-		if( m_Inventory[i].Quantity <= 0 )
+		vector<int> none;
+		for(int i = 0; i < m_Inventory.size(); i++)
 		{
-			none.push_back( i );
+			if(m_Inventory[i].Quantity <= 0)
+			{
+				none.push_back(i);
+			}
 		}
-	}
 
-	for ( int i = 0; i < none.size(); i++ )
-	{
-		m_Inventory.erase(m_Inventory.begin() + none[i] );
+		if(none.size() == m_Inventory.size())
+		{
+			m_Inventory.clear();
+		}
+		else
+		{
+			for(int i = 0; i < none.size(); i++)
+			{
+				m_Inventory.erase(m_Inventory.begin() + none[i]);
+			}
+		}
 	}
 
 	if (m_State == Act)
@@ -806,7 +783,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					return true;
 				}
 			}
-			else if ( m_Inventory[i].item.effect == poison )
+			/*else if ( m_Inventory[i].item.effect == poison )
 			{
 				if ( m_Poison != PoisonedWeapon )
 				{
@@ -814,7 +791,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					m_Inventory[i].Quantity--;
 					return true;
 				}
-			}
+			}*/
 		}
 		return false;
 	}

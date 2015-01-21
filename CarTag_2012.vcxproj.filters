@@ -231,6 +231,9 @@
     </ClInclude>
     <ClInclude Include="Source\Battle.h" />
     <ClInclude Include="Source\AntTweakBar.h" />
+    <ClInclude Include="Source\Scene\Externals.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Render\PS_DiffuseColour.psh">

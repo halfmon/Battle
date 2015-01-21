@@ -161,6 +161,7 @@
     <ClInclude Include="Source\Scene\Defence.h" />
     <ClInclude Include="Source\Scene\Entity.h" />
     <ClInclude Include="Source\Scene\EntityManager.h" />
+    <ClInclude Include="Source\Scene\Externals.h" />
     <ClInclude Include="Source\Scene\Items.h" />
     <ClInclude Include="Source\Scene\Light.h" />
     <ClInclude Include="Source\Scene\Messenger.h" />
