@@ -319,24 +319,24 @@ void SetUpAttackOrder()
 		}
 	}
 }
-void CleanAttackOrder()
-{
-	vector<int> deadPos;
-	for(int i = 0; i < AttackOrder.size(); i++)
-	{
-		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
-		{
-			deadPos.push_back(i);
-		}
-	}
-
-	for(int i =0; i < deadPos.size(); i++)
-	{
-		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
-		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
-		NumTotal--;
-	}
-}
+//void CleanAttackOrder()
+//{
+//	vector<int> deadPos;
+//	for(int i = 0; i < AttackOrder.size(); i++)
+//	{
+//		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
+//		{
+//			deadPos.push_back(i);
+//		}
+//	}
+//
+//	for(int i =0; i < deadPos.size(); i++)
+//	{
+//		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
+//		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
+//		NumTotal--;
+//	}
+//}
 
 // Functions for getting the required variable type when reading in from an XML file.
 SAttack stringToAttack ( string attack )
@@ -772,7 +772,23 @@ bool SceneSetup()
 	EntityManager.CreateTemplate( "Scenery", "Floor", "Floor.x" );
 	EntityManager.CreateTemplate( "Scenery", "Building", "Building.x" );
 	EntityManager.CreateTemplate( "Scenery", "Tree", "Tree.x" );
-	EntityManager.CreateTemplate( "Effect", "Attack", "Sphere.x" );
+
+	EntityManager.CreateTemplate( "Effect", "Cut", "Cut.x" );
+	EntityManager.CreateTemplate( "Effect", "Crush", "Crush.x");
+	EntityManager.CreateTemplate( "Effect", "Stab", "Stab.x");
+	EntityManager.CreateTemplate( "Effect", "Lightning", "Lightning.x");
+	EntityManager.CreateTemplate( "Effect", "Fire", "Fire.x");
+	EntityManager.CreateTemplate( "Effect", "Ice", "Ice.x");
+	EntityManager.CreateTemplate( "Effect", "Arcane", "Arcane.x");
+
+	vector<string> attacks;
+	attacks.push_back("Cut");
+	attacks.push_back("Crush");
+	attacks.push_back("Stab");
+	attacks.push_back("Lightning");
+	attacks.push_back("Fire");
+	attacks.push_back("Ice");
+	attacks.push_back("Arcane");
 
 	// Creates scenery entities (equivalent of models)
 	// Template name, entity name, position, rotation, scale
@@ -802,7 +818,7 @@ bool SceneSetup()
 									CVector3(0.0f, Random(0.0f, ToRadians(360.0f)), 0.0f),
 									CVector3(1.0f, Random(0.8f, 1.2f), 1.0f) );
 	}
-	attackEffect = CAttackEffect( "Attack", "Attack" );
+	attackEffect = CAttackEffect( attacks, "Attack" );
 
 	charDoc.LoadFile();
 	TemplateSetup();
@@ -939,7 +955,9 @@ void RenderSceneText( float updateTime )
 		RenderText(outText.str(),0,0,1.0f,1.0f,0.0f);
 		outText.str("");
 
-		outText<< "Attack Effect Taraget: " << EntityManager.GetCharEntity(attackEffect.getTarget())->Template()->GetName() << " " << EntityManager.GetCharEntity(attackEffect.getTarget())->GetName();
+		CVector3 TargetPos = attackEffect.getTargetPos();
+
+		outText << "Attack Effect State: " << attackEffect.getState();
 		RenderText(outText.str(),ViewportWidth/2,0,1.0f,1.0f,1.0f,true,End);
 		outText.str("");
 	}
@@ -961,7 +979,7 @@ void RenderSceneText( float updateTime )
 			{
 				RenderText( "Attack: "  + allyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + allyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
-				//RenderText( "Items: "   + allyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
+				RenderText( "Items: "   + allyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
 			}
 		}
 		int HUDX = ViewportWidth - (ViewportWidth / 3);
@@ -977,11 +995,11 @@ void RenderSceneText( float updateTime )
 			displayMagic = 0;
 		}
 		outText << allyEntity->Template()->GetName().c_str() << " "
-			<< allyEntity->GetName().c_str()
-			<< "  |  HP: " << displayHealth << "/"
-			<< allyEntity->GetTemplate()->GetMaxHealth()
-			<< "  |  MP: " << displayMagic << "/"
-			<< allyEntity->GetTemplate()->GetMaxMagic();
+			    << allyEntity->GetName().c_str()
+			    << "  |  HP: " << displayHealth << "/"
+			    << allyEntity->GetTemplate()->GetMaxHealth()
+			    << "  |  MP: " << displayMagic << "/"
+			    << allyEntity->GetTemplate()->GetMaxMagic();
 		RenderText(outText.str(),HUDX,HUDY,1.0f,1.0f,1.0f,false,HUD);
 		outText.str("");
 
@@ -1020,11 +1038,11 @@ void RenderSceneText( float updateTime )
 			displayMagic = 0;
 		}
 		outText << enemyEntity->Template()->GetName().c_str() << " "
-			<< enemyEntity->GetName().c_str()
-			<< "  |  HP: " << displayHealth << "/"
-			<< enemyEntity->GetTemplate()->GetMaxHealth()
-			<< "  |  MP: " << displayMagic << "/"
-			<< enemyEntity->GetTemplate()->GetMaxMagic();
+			    << enemyEntity->GetName().c_str()
+			    << "  |  HP: " << displayHealth << "/"
+			    << enemyEntity->GetTemplate()->GetMaxHealth()
+			    << "  |  MP: " << displayMagic << "/"
+			    << enemyEntity->GetTemplate()->GetMaxMagic();
 		RenderText(outText.str(),HUDX,HUDY,1.0f,1.0f,1.0f,false,HUD);
 		outText.str("");
 
@@ -1115,8 +1133,8 @@ void UpdateScene( float updateTime )
 	}
 
 	// Move the camera
-	//MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
-	//                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
+	MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
+	                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
 }
 
 } // namespace gen

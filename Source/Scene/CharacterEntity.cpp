@@ -663,15 +663,31 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		}
 	}
 
-	if (m_State == Dead)
+	if(m_State == Dead)
 	{
-		msg.type = Msg_Act;
-		msg.order++;
-		if (msg.order >= NumTotal)
+		if(effectOn)
 		{
-			msg.order = 0;
+			if(attackEffect.getState() == Inactive)
+			{
+				msg.type = Msg_Act;
+				msg.order++;
+				if(msg.order >= NumTotal)
+				{
+					msg.order = 0;
+				}
+				Messenger.SendMessage(AttackOrder[msg.order],msg);
+			}
 		}
-		Messenger.SendMessage(AttackOrder[msg.order], msg);
+		else
+		{
+			msg.type = Msg_Act;
+			msg.order++;
+			if(msg.order >= NumTotal)
+			{
+				msg.order = 0;
+			}
+			Messenger.SendMessage(AttackOrder[msg.order],msg);
+		}
 	}
 
 	return true;

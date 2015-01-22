@@ -117,7 +117,7 @@ public:
 	// and from the given camera
 	void Render( CMatrix4x4* matrices, CCamera* camera );
 
-	void ChangeTexture( string newTex );
+	bool ChangeTexture( string newTex );
 
 
 /*-----------------------------------------------------------------------------------------

@@ -555,32 +555,20 @@ void CMesh::Render(	CMatrix4x4* matrices, CCamera* camera )
 	}
 }
 
-void CMesh::ChangeTexture( string newTex )
+bool CMesh::ChangeTexture( string newTex )
 {
-	SMeshMaterial newMaterial;
-
-	newMaterial.diffuseColour.r = m_Materials->diffuseColour.r;
-	newMaterial.diffuseColour.g = m_Materials->diffuseColour.g;
-	newMaterial.diffuseColour.b = m_Materials->diffuseColour.b;
-	newMaterial.diffuseColour.a = m_Materials->diffuseColour.a;
-
-	newMaterial.numTextures = m_Materials->numTextures;
-
-	newMaterial.renderMethod = m_Materials->renderMethod;
-
-	newMaterial.specularColour.r = m_Materials->specularColour.r;
-	newMaterial.specularColour.g = m_Materials->specularColour.g;
-	newMaterial.specularColour.b = m_Materials->specularColour.b;
-	newMaterial.specularColour.a = m_Materials->specularColour.a;
-
-	newMaterial.specularPower = m_Materials->specularPower;
-
-	for (TUInt32 texture = 0; texture < newMaterial.numTextures; ++texture)
+	for(TUInt32 texture = 0; texture < m_Materials->numTextures; ++texture)
 	{
-		newMaterial.textureFileNames[texture] = newTex;
+		string fullFileName = MediaFolder + newTex;
+		if(FAILED(D3DXCreateTextureFromFile(g_pd3dDevice,fullFileName.c_str(),
+			&m_Materials->textures[texture])))
+		{
+			string errorMsg = "Error loading texture " + fullFileName;
+			SystemMessageBox(errorMsg.c_str(),"CMesh Error");
+			return false;
+		}
 	}
-
-	CreateMaterialDX( newMaterial, m_Materials );
+	return true;
 }
 
 } // namespace gen

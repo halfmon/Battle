@@ -1,8 +1,9 @@
-﻿Build started 22/01/2015 10:16:22.
+﻿Build started 22/01/2015 13:20:44.
      1>Project "C:\Users\DLRiley\Desktop\Battle - Copy\CarTag_2012.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Scene\AttackEffect.cpp
          AttackEffect.cpp
+     1>Source\Scene\AttackEffect.cpp(20): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\DLRiley\Desktop\Battle - Copy\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
          Release\Camera.obj
@@ -42,4 +43,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.60
+Time Elapsed 00:00:01.53
