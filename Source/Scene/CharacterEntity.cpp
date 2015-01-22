@@ -178,7 +178,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 	msg.from = GetUID();
 	if(effectOn)
 	{
-		attackEffect.StartAttack(EntityManager.GetCharEntity(target)->Matrix().GetPosition(),Matrix().GetPosition(),target,msg);
+		attackEffect.StartAttack(Matrix().GetPosition(), target, msg);
 	}
 	else
 	{
@@ -261,7 +261,7 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 		msg.from = GetUID();
 		if(effectOn)
 		{
-			attackEffect.StartAttack(EntityManager.GetCharEntity(target)->Matrix().GetPosition(),Matrix().GetPosition(),target,msg);
+			attackEffect.StartAttack(Matrix().GetPosition(), target, msg);
 		}
 		else
 		{
@@ -467,7 +467,7 @@ void CCharEntity::Planning( SMessage msg )
 
 			if(effectOn)
 			{
-				attackEffect.StartAttack(EntityManager.GetCharEntity(target)->Matrix().GetPosition(),Matrix().GetPosition(),target,msg);
+				attackEffect.StartAttack( Matrix().GetPosition(), target, msg);
 			}
 			else
 			{
@@ -652,6 +652,15 @@ bool CCharEntity::Update( TFloat32 updateTime )
 				Planning( msg );
 			}
 		}
+		if(m_Poison == IsPoisoned)
+		{
+			m_PoisonCount--;
+			m_CurrentHealth = static_cast<TInt32>(m_CurrentHealth * 0.9f);
+			if(m_PoisonCount < 1)
+			{
+				m_Poison = None;
+			}
+		}
 	}
 
 	if (m_State == Dead)
@@ -663,16 +672,6 @@ bool CCharEntity::Update( TFloat32 updateTime )
 			msg.order = 0;
 		}
 		Messenger.SendMessage(AttackOrder[msg.order], msg);
-	}
-
-	if(m_Poison == IsPoisoned)
-	{
-		m_PoisonCount--;
-		m_CurrentHealth = static_cast<TInt32>(m_CurrentHealth * 0.9f);
-		if(m_PoisonCount < 1)
-		{
-			m_Poison = None;
-		}
 	}
 
 	return true;

@@ -11,9 +11,9 @@ CAttackEffect::CAttackEffect(void)
 
 CAttackEffect::CAttackEffect(std::string tempName, std::string name)
 {
-	m_Effect = EntityManager.CreateEntity( tempName, name, CVector3( 0, -100, 0 ), CVector3( 0.0f, 0.0f, 0.0f ), CVector3( 0.05f, 0.05f, 0.05f) );
+	m_Effect = EntityManager.CreateEntity( tempName, name, CVector3( 0.0f, -10.0f, 0.0f ), CVector3( 0.0f, 0.0f, 0.0f ), CVector3( 0.05f, 0.05f, 0.05f) );
 
-	m_TargetPos = CVector3( 0, 0, 0 );
+	m_TargetPos = CVector3( 0.0f, 0.0f, 0.0f );
 	m_Target = NULL;
 
 	m_State = Inactive;
@@ -42,53 +42,64 @@ void CAttackEffect::Update( TFloat32 updateTime )
 				m_MSG.order = 0;
 			} 
 			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);
-			attack->Matrix().SetPosition( CVector3(0.0f, -100.0f, 0.0f) );
+			attack->Matrix().SetPosition( CVector3(0.0f, -10.0f, 0.0f) );
+
+			m_TargetPos = CVector3(0.0f,0.0f,0.0f);
+			m_Target = NULL;
 			m_State = Inactive;
 		}
 	}
 }
 
-void CAttackEffect::StartAttack( CVector3 targetPos, CVector3 attackerPos, TEntityUID target, SMessage msg )
+void CAttackEffect::StartAttack( CVector3 attackerPos, TEntityUID target, SMessage msg )
 {
-	m_TargetPos = targetPos;
+	CEntity* effect = EntityManager.GetEntity(m_Effect);
+
+	m_State = Active;
+
+	switch(msg.attack.element)
+	{
+	case Cut:
+		effect->Template()->Mesh()->ChangeTexture("Cut.png");
+		break;
+	case Crush:
+		effect->Template()->Mesh()->ChangeTexture("Crush.png");
+		break;
+	case Stab:
+		effect->Template()->Mesh()->ChangeTexture("Stab.png");
+		break;
+	case Lightning:
+		effect->Template()->Mesh()->ChangeTexture("Lightning.png");
+		break;
+	case Fire:
+		effect->Template()->Mesh()->ChangeTexture("Fire.png");
+		break;
+	case Ice:
+		effect->Template()->Mesh()->ChangeTexture("Ice.png");
+		break;
+	case Arcane:
+		effect->Template()->Mesh()->ChangeTexture("Arcane.png");
+		break;
+	}
+
+	m_TargetPos = EntityManager.GetEntity(target)->Position();
 	m_TargetPos.y += 1;
 	m_Target = target;
 	attackerPos.y += 1;
-	EntityManager.GetEntity(m_Effect)->Matrix().SetPosition( attackerPos );
-	EntityManager.GetEntity(m_Effect)->Matrix().FaceTarget( m_TargetPos );
+	effect->Matrix().SetPosition( attackerPos );
+	effect->Matrix().FaceTarget( m_TargetPos );
 	m_MSG = msg;
-	m_State = Active;
-
-	/*switch( msg.attack.element )
-	{
-	case Cut:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Cut.png" );
-		break;
-	case Crush:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Crush.png" );
-		break;
-	case Stab:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Stab.png" );
-		break;
-	case Lightning:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Lightning.png" );
-		break;
-	case Fire:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Fire.png" );
-		break;
-	case Ice:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Ice.png" );
-		break;
-	case Arcane:
-		EntityManager.GetEntity(m_Effect)->Template()->Mesh()->ChangeTexture( "Arcane.png" );
-		break;
-	}*/
 }
 
 void CAttackEffect::Reset()
 {
 	m_State = Inactive;
-	EntityManager.GetEntity( m_Effect )->Matrix().SetY( -100 );
+	EntityManager.GetEntity( m_Effect )->Matrix().SetY( -10.0f );
+}
+
+CVector3 CAttackEffect::getPos()
+{
+	return EntityManager.GetEntity(m_Effect)->Position();
 }
 
 }

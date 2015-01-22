@@ -31,7 +31,7 @@ public:
 
 	void Update(TFloat32 updateTime);
 
-	void StartAttack( CVector3 targetPos, CVector3 attackerPos, TEntityUID target, SMessage msg );
+	void StartAttack( CVector3 attackerPos, TEntityUID target, SMessage msg );
 
 	void Reset();
 
@@ -39,6 +39,7 @@ public:
 	{
 		return m_Target;
 	}
+	CVector3 getPos();
 };
 
 }

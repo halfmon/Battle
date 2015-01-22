@@ -344,13 +344,13 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
 					gen::UpdateScene( updateTime );
 
 					// Toggle fullscreen / windowed
-					if (gen::KeyHit( gen::Key_F1 ))
+					/*if (gen::KeyHit( gen::Key_F1 ))
 					{
 						if (!gen::ResetDevice( hWnd, true ))
 						{
 							DestroyWindow( hWnd );
 						}
-					}
+					}*/
 
 					// Quit on escape
 					if (gen::KeyHit( gen::Key_Escape ))

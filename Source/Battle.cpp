@@ -85,6 +85,7 @@ CCamera* MainCamera;
 
 int generalAI = 1;
 TInt32 NumTotal = 0;
+TInt32 order = 0;
 TiXmlDocument charDoc( "Characters.xml" );
 
 //Variables to be used with ant Tweak bar.
@@ -726,6 +727,7 @@ void TW_CALL InventoryRandom(void* clientData)
 void TweakBarSetup()
 {
 	myBar = TwNewBar( "Tweak Bar" );
+	TwDefine("'Tweak Bar' position='5 5'");
 	TwAddVarRW ( myBar, "AI Used",          TW_TYPE_INT32,   &generalAI,    "min=1 max=3" );
 	TwAddButton( myBar, "Start",            StartRound,      NULL,          "" );
 	TwAddButton( myBar, "Reset Characters", ResetChar,       NULL,          "" );
@@ -734,6 +736,7 @@ void TweakBarSetup()
 	TwAddVarRW ( myBar, "Template AI",      TW_TYPE_BOOLCPP, &templateAIOn, "" );
 
 	itemBar = TwNewBar( "Item modifier" );
+	TwDefine("'Item modifier' position='205 5'");
 	TwAddButton( itemBar, "Fill Inventory", InventoryRandom, NULL, "");
 
 	TwAddSeparator(itemBar,"Enemies",NULL);
@@ -1113,8 +1116,8 @@ void UpdateScene( float updateTime )
 	}
 
 	// Move the camera
-	//MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
-	//                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
+	MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
+	                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
 }
 
 } // namespace gen
