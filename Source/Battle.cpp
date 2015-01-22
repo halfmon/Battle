@@ -85,7 +85,6 @@ CCamera* MainCamera;
 
 int generalAI = 1;
 TInt32 NumTotal = 0;
-TInt32 order = 0;
 TiXmlDocument charDoc( "Characters.xml" );
 
 //Variables to be used with ant Tweak bar.
@@ -320,24 +319,24 @@ void SetUpAttackOrder()
 		}
 	}
 }
-//void CleanAttackOrder()
-//{
-//	vector<int> deadPos;
-//	for(int i = 0; i < AttackOrder.size(); i++)
-//	{
-//		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
-//		{
-//			deadPos.push_back(i);
-//		}
-//	}
-//
-//	for(int i =0; i < deadPos.size(); i++)
-//	{
-//		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
-//		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
-//		NumTotal--;
-//	}
-//}
+void CleanAttackOrder()
+{
+	vector<int> deadPos;
+	for(int i = 0; i < AttackOrder.size(); i++)
+	{
+		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
+		{
+			deadPos.push_back(i);
+		}
+	}
+
+	for(int i =0; i < deadPos.size(); i++)
+	{
+		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
+		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
+		NumTotal--;
+	}
+}
 
 // Functions for getting the required variable type when reading in from an XML file.
 SAttack stringToAttack ( string attack )
@@ -1116,8 +1115,8 @@ void UpdateScene( float updateTime )
 	}
 
 	// Move the camera
-	MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
-	                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
+	//MainCamera->Control( Key_Up, Key_Down, Key_Left, Key_Right, Key_W, Key_S, Key_A, Key_D, 
+	//                     CameraMoveSpeed * updateTime, CameraRotSpeed * updateTime );
 }
 
 } // namespace gen

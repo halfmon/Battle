@@ -32,7 +32,10 @@ void CAttackEffect::Update( TFloat32 updateTime )
 		//attack->Matrix().FaceTarget( m_TargetPos );
 		attack->Matrix().MoveLocalZ( ATTACK_SPEED * updateTime );
 
-		if( attack->Matrix().GetX() - m_TargetPos.x < 0.2f && attack->Matrix().GetZ() - m_TargetPos.z < 0.2f )
+		TFloat32 X = fabs(attack->Position().x - m_TargetPos.x);
+		TFloat32 Z = fabs(attack->Position().z - m_TargetPos.z);
+
+		if( X < 0.2f && Z < 0.2f )
 		{
 			Messenger.SendMessage( m_Target, m_MSG );
 			m_MSG.type = Msg_Act;
@@ -82,7 +85,7 @@ void CAttackEffect::StartAttack( CVector3 attackerPos, TEntityUID target, SMessa
 		break;
 	}
 
-	m_TargetPos = EntityManager.GetEntity(target)->Position();
+	m_TargetPos = EntityManager.GetCharEntity(target)->Position();
 	m_TargetPos.y += 1;
 	m_Target = target;
 	attackerPos.y += 1;
@@ -93,6 +96,8 @@ void CAttackEffect::StartAttack( CVector3 attackerPos, TEntityUID target, SMessa
 
 void CAttackEffect::Reset()
 {
+	m_TargetPos = CVector3(0.0f,0.0f,0.0f);
+	m_Target = NULL;
 	m_State = Inactive;
 	EntityManager.GetEntity( m_Effect )->Matrix().SetY( -10.0f );
 }

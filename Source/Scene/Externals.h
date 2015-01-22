@@ -10,7 +10,6 @@ namespace gen
 	extern CEntityManager EntityManager;
 	extern CMessenger Messenger;
 
-	extern TInt32 order;
 	extern TInt32 NumTotal;
 	extern vector<TEntityUID> AttackOrder;
 
