@@ -12,6 +12,7 @@ using namespace std;
 #include "Defines.h"
 #include "Entity.h"
 #include "Attacks.h"
+#include "items.h"
 
 namespace gen
 {
@@ -29,6 +30,7 @@ enum EMessageType
 	Msg_HealthRestored,
 	Msg_MagicRestored,
 	Msg_Poison,
+	Msg_AddPoison,
 	Msg_Revive
 };
 
@@ -42,6 +44,7 @@ struct SMessage
 	TEntityUID   from;
 	SAttack      attack;
 	int          itemEffect;
+	EEffect      itemType;
 	int order;  // The position in the attack order the current actor is
 };
 

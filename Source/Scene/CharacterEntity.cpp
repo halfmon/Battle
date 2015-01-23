@@ -7,7 +7,8 @@
 #include "CharacterEntity.h"
 #include "EntityManager.h"
 #include "Messenger.h"
-#include "AttackEffect.h"
+//#include "AttackEffect.h"
+//#include "ItemEffect.h"
 #include "Externals.h"
 
 namespace gen
@@ -360,7 +361,7 @@ void CCharEntity::Planning( SMessage msg )
 				bool weakness = false;
 				for(auto it = Allies.begin(); it != Allies.end(); it++)
 				{
-					EElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
+					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
 					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
 					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 					{
@@ -381,7 +382,7 @@ void CCharEntity::Planning( SMessage msg )
 				bool weakness = false;
 				for(auto it = Enemies.begin(); it != Enemies.end(); it++)
 				{
-					EElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
+					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
 					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
 					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 					{
@@ -588,14 +589,14 @@ bool CCharEntity::Update( TFloat32 updateTime )
 
 	if ( m_CurrentHealth <= 0 && m_State != Dead )
 	{
-		Matrix().SetY(-200.0f);
+		Matrix().SetY(-10.0f);
 		m_State = Dead;
 	}
 
 	if( m_Inventory.size() > 0 )
 	{
 		vector<int> none;
-		for(int i = 0; i < m_Inventory.size(); i++)
+		for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 		{
 			if(m_Inventory[i].Quantity <= 0)
 			{
@@ -609,7 +610,7 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		}
 		else
 		{
-			for(int i = 0; i < none.size(); i++)
+			for(int i = 0; i < static_cast<int>(none.size()); i++)
 			{
 				m_Inventory.erase(m_Inventory.begin() + none[i]);
 			}
@@ -697,7 +698,7 @@ void CCharEntity::AddItemToInvantory( SItem newItem )
 {
 	bool haveOne = false;
 	int haveOnePos = 0;
-	for ( int i = 0; i < m_Inventory.size(); i++ )
+	for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 	{
 		if ( m_Inventory[i].item.name == newItem.name )
 		{
@@ -723,7 +724,7 @@ bool CCharEntity::UseItem( SMessage msg )
 	}
 	else
 	{
-		for( int i = 0; i < m_Inventory.size(); i++ )
+		for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 		{
 			if ( m_Inventory[i].item.effect == restoreHealth )
 			{
@@ -744,8 +745,16 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_HealthRestored;
 					msg.from = GetUID();
+					msg.itemType = restoreHealth;
 					msg.itemEffect = m_Inventory[i].item.value;
-					Messenger.SendMessage(current, msg);
+					if(effectOn)
+					{
+						itemEffect.StartEffect(Position(),current,msg);
+					}
+					else
+					{
+						Messenger.SendMessage(current,msg);
+					}
 					m_Inventory[i].Quantity--;
 					return true;
 				}
@@ -770,8 +779,16 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_MagicRestored;
 					msg.from = GetUID();
+					msg.itemType = restoreMana;
 					msg.itemEffect = m_Inventory[i].item.value;
-					Messenger.SendMessage(current, msg);
+					if(effectOn)
+					{
+						itemEffect.StartEffect(Position(),current,msg);
+					}
+					else
+					{
+						Messenger.SendMessage(current,msg);
+					}
 					m_Inventory[i].Quantity--;
 					return true;
 				}
@@ -792,21 +809,33 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_Revive;
 					msg.from = GetUID();
+					msg.itemType = revive;
 					msg.itemEffect = m_Inventory[i].item.value;
-					Messenger.SendMessage(target, msg);
+					if(effectOn)
+					{
+						itemEffect.StartEffect(Position(),target,msg);
+					}
+					else
+					{
+						Messenger.SendMessage(target,msg);
+					}
 					m_Inventory[i].Quantity--;
 					return true;
 				}
 			}
-			/*else if ( m_Inventory[i].item.effect == poison )
+			else if ( m_Inventory[i].item.effect == poison )
 			{
 				if ( m_Poison != PoisonedWeapon )
 				{
+					if(effectOn)
+					{
+						itemEffect.StartEffect(Position(),GetUID(),msg);
+					}
 					m_Poison = PoisonedWeapon;
 					m_Inventory[i].Quantity--;
 					return true;
 				}
-			}*/
+			}
 		}
 		return false;
 	}
@@ -816,7 +845,7 @@ bool CCharEntity::UseItem( SMessage msg )
 TInt32 CCharEntity::GetNumInInvantory()
 {
 	int total = 0;
-	for ( int i = 0; i < m_Inventory.size(); i++ )
+	for ( int i = 0; i < static_cast<int>(m_Inventory.size()); i++ )
 	{
 		total += m_Inventory[i].Quantity;
 	}

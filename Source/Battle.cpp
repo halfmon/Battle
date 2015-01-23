@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-using namespace std;
 
 #include <d3dx9.h>
 #include <AntTweakBar.h>
@@ -65,6 +64,7 @@ extern CMessenger Messenger;
 //-----------------------------------------------------------------------------
 
 CAttackEffect attackEffect;
+CItemEffect itemEffect;
 
 // Entity manager
 CEntityManager EntityManager;
@@ -93,6 +93,7 @@ extern TwBar* itemBar;
 
 int enemyItem = 0;
 int allyItem = 0;
+int effectSpeedModifier = 1;
 
 bool debugInfoOn = false; //Decide if information used when debugging is show or not
 bool started = false;
@@ -421,7 +422,7 @@ SDefence stringToDefence ( string defence )
 		return BASIC_PHYSICAL;
 	}
 }
-EElement stringToWeakness ( string weakness )
+EAttackElement stringToWeakness ( std::string weakness )
 {
 	if ( weakness == "Cut" )
 	{
@@ -504,7 +505,7 @@ void TemplateSetup()
 		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence3") ) );
 		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence4") ) );
 
-		EElement weak = stringToWeakness( pElem->Attribute("Weakness") );
+		EAttackElement weak = stringToWeakness( pElem->Attribute("Weakness") );
 
 		TInt32 AI;
 		pElem->QueryIntAttribute("AI", &AI);
@@ -598,6 +599,7 @@ void TW_CALL ResetChar(void* clientData)
 	started = false;
 
 	attackEffect.Reset();
+	itemEffect.Reset();
 }
 
 void TW_CALL AddPotionE(void* clientData)
@@ -732,6 +734,7 @@ void TweakBarSetup()
 	TwAddButton( myBar, "Reset Characters", ResetChar,       NULL,          "" );
 	TwAddVarRW ( myBar, "Debug Info",       TW_TYPE_BOOLCPP, &debugInfoOn,  "" );
 	TwAddVarRW ( myBar, "Attack Effect",    TW_TYPE_BOOLCPP, &effectOn,     "" );
+	TwAddVarRW(myBar,"Attack Effect Speed Modifer",TW_TYPE_INT32,&effectSpeedModifier,"min=1 max=3");
 	TwAddVarRW ( myBar, "Template AI",      TW_TYPE_BOOLCPP, &templateAIOn, "" );
 
 	itemBar = TwNewBar( "Item modifier" );
@@ -781,6 +784,11 @@ bool SceneSetup()
 	EntityManager.CreateTemplate( "Effect", "Ice", "Ice.x");
 	EntityManager.CreateTemplate( "Effect", "Arcane", "Arcane.x");
 
+	EntityManager.CreateTemplate("Effect","HealthPotion","HealthPotion.x");
+	EntityManager.CreateTemplate("Effect","MagicPotion","MagicPotion.x");
+	EntityManager.CreateTemplate("Effect","Poison","Poison.x");
+	EntityManager.CreateTemplate("Effect","Revive","Revive.x");
+
 	vector<string> attacks;
 	attacks.push_back("Cut");
 	attacks.push_back("Crush");
@@ -789,6 +797,12 @@ bool SceneSetup()
 	attacks.push_back("Fire");
 	attacks.push_back("Ice");
 	attacks.push_back("Arcane");
+
+	vector<string> items;
+	items.push_back("HealthPotion");
+	items.push_back("MagicPotion");
+	items.push_back("Poison");
+	items.push_back("Revive");
 
 	// Creates scenery entities (equivalent of models)
 	// Template name, entity name, position, rotation, scale
@@ -819,6 +833,7 @@ bool SceneSetup()
 									CVector3(1.0f, Random(0.8f, 1.2f), 1.0f) );
 	}
 	attackEffect = CAttackEffect( attacks, "Attack" );
+	itemEffect = CItemEffect( items, "Item" );
 
 	charDoc.LoadFile();
 	TemplateSetup();
@@ -1071,7 +1086,8 @@ void UpdateScene( float updateTime )
 
 	// Call all entity update functions
 	EntityManager.UpdateAllEntities( updateTime );
-	attackEffect.Update( updateTime );
+	attackEffect.Update( updateTime * effectSpeedModifier );
+	itemEffect.Update( updateTime * effectSpeedModifier );
 
 	// Key F1 used for full screen toggle
 	// System messages
@@ -1100,6 +1116,7 @@ void UpdateScene( float updateTime )
 
 		started = false;
 		attackEffect.Reset();
+		itemEffect.Reset();
 	}
 
 	if (KeyHit( Key_1 ))
@@ -1113,13 +1130,6 @@ void UpdateScene( float updateTime )
 	if (KeyHit( Key_3 ))
 	{
 		generalAI = 3;
-	}
-
-	if(KeyHit(Key_0))
-	{
-		SMessage msg;
-		msg.type = Msg_Poison;
-		Messenger.SendMessage(Enemies[enemyItem],msg);
 	}
 
 	if(!AllyAlive() || !EnemyAlive())

@@ -57,7 +57,7 @@ public:
 	                                                   const string& mesh, TInt32 maxHealth,
 													   TInt32 maxMagic, TInt32 st, TInt32 in, 
 													   TInt32 sp, vector<SAttack> attacks, vector<SDefence> defences,
-													   EElement weakness, TInt32 AI);
+													   EAttackElement weakness, TInt32 AI);
 
 	// Destroy the given template (name) - returns true if the template existed and was destroyed
 	bool DestroyTemplate( const string& name );

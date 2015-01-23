@@ -14,6 +14,7 @@ namespace gen
 	extern vector<TEntityUID> AttackOrder;
 
 	extern CAttackEffect attackEffect;
+	extern CItemEffect itemEffect;
 
 	extern TEntityUID RandomEnemy();
 	extern TEntityUID RandomAlly();

@@ -9,9 +9,9 @@
 
 namespace gen
 {
-	const int ATTACK_SPEED = 10;
+const int ATTACK_SPEED = 10;
 
-	enum eAttackState { Active, Inactive };
+enum eAttackState { Active, Inactive };
 
 class CAttackEffect
 {

@@ -11,16 +11,12 @@ CAttackEffect::CAttackEffect(void)
 
 CAttackEffect::CAttackEffect(vector<std::string> tempName, std::string name)
 {
-	int count = 0;
 	for(auto it = tempName.begin(); it != tempName.end(); it++)
 	{
 		m_Effect.push_back(EntityManager.CreateEntity((*it), name, CVector3(0.0f,-10.0f,0.0f),CVector3(0.0f,0.0f,0.0f),CVector3(0.05f,0.05f,0.05f)));
 	}
 	
-	for(int i = 0; i < tempName.size(); i++)
-	{
-		m_TargetPos = CVector3(0.0f + (i*10),0.0f,0.0f);
-	}
+	m_TargetPos = CVector3(0.0f, 0.0f, 0.0f);
 	m_Target = NULL;
 
 	m_State = Inactive;

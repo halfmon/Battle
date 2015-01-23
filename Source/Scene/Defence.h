@@ -17,7 +17,7 @@ struct SDefence
 {
 	EDefenceType type;
 	EAttackType  attackRecivedType;
-	EElement     element;
+	EAttackElement     element;
 	float        modifier;
 	int          cost;
 };

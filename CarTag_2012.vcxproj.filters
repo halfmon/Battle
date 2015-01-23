@@ -122,6 +122,12 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Battle.cpp" />
+    <ClCompile Include="Source\Scene\ItemEffect.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Attacks.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scene\Camera.h">
@@ -232,6 +238,9 @@
     <ClInclude Include="Source\Battle.h" />
     <ClInclude Include="Source\AntTweakBar.h" />
     <ClInclude Include="Source\Scene\Externals.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\ItemEffect.h">
       <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>

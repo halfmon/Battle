@@ -18,6 +18,7 @@ using namespace std;
 #include "Defence.h"
 #include "Items.h"
 #include "AttackEffect.h"
+#include "ItemEffect.h"
 
 namespace gen
 {
@@ -38,7 +39,7 @@ public:
 		(
 		const string& type,const string& name,const string& meshFilename,
 		TInt32 maxHealth,TInt32 maxMagic,TInt32 st,TInt32 in,TInt32 sp,
-		vector<SAttack> attacks,vector<SDefence> defences,EElement weak,TInt32 AI
+		vector<SAttack> attacks,vector<SDefence> defences,EAttackElement weak,TInt32 AI
 		): CEntityTemplate(type,name,meshFilename)
 	{
 		m_MaxHealth = maxHealth;
@@ -46,7 +47,7 @@ public:
 		m_Stats.strength = st;
 		m_Stats.intelligence = in;
 		m_Stats.speed = sp;
-		m_Weakness = weak;
+		m_Weakness.element = weak;
 		m_AI = AI;
 
 		for(int i = 0; i < NumAttacks; i++)
@@ -75,7 +76,7 @@ private:
 	SStats  m_Stats;
 	vector<SAttack> m_Attacks;
 	vector<SDefence> m_Defences;
-	EElement m_Weakness;
+	SWeakness m_Weakness;
 	TInt32 m_AI;
 
 
@@ -125,9 +126,9 @@ public:
 		return m_Defences.size();
 	}
 
-	EElement GetWeakness()
+	EAttackElement GetWeakness()
 	{
-		return m_Weakness;
+		return m_Weakness.element;
 	};
 	TInt32 GetAI()
 	{
