@@ -19,6 +19,7 @@
 #include "Messenger.h"
 #include "Battle.h"
 #include "tinyxml.h"
+#include "attacks.h"
 
 namespace gen
 {
@@ -75,6 +76,7 @@ TInt32 NumAllies  = 0;
 vector<TEntityUID> Enemies;
 vector<TEntityUID> Allies;
 vector<TEntityUID> AttackOrder;
+vector<CAttack> ListOfAttacks;
 
 // Other scene elements
 const int NumTrees = 200;
@@ -86,6 +88,7 @@ CCamera* MainCamera;
 int generalAI = 1;
 TInt32 NumTotal = 0;
 TiXmlDocument charDoc( "Characters.xml" );
+TiXmlDocument attackDoc("Attacks.xml");
 
 //Variables to be used with ant Tweak bar.
 extern TwBar* myBar;
@@ -342,31 +345,31 @@ void SetUpAttackOrder()
 // Functions for getting the required variable type when reading in from an XML file.
 SAttack stringToAttack ( string attack )
 {
-	if ( attack == "CUT" )
+	if ( attack == "Cut" )
 	{
 		 return CUT;
 	}
-	else if ( attack == "CRUSH" )
+	else if ( attack == "Crush" )
 	{
 		return CRUSH;
 	}
-	else if ( attack == "STAB" )
+	else if ( attack == "Stab" )
 	{
 		return STAB;
 	}
-	else if ( attack == "LIGHTNING" )
+	else if ( attack == "Lightning" )
 	{
 		return LIGHTNING;
 	}
-	else if ( attack == "FIRE" )
+	else if ( attack == "Fire" )
 	{
 		return FIRE;
 	}
-	else if ( attack == "ICE" )
+	else if ( attack == "Ice" )
 	{
 		return ICE;
 	}
-	else if ( attack == "ARCANE" )
+	else if ( attack == "Arcane" )
 	{
 		return ARCANE;
 	}
@@ -422,33 +425,33 @@ SDefence stringToDefence ( string defence )
 		return BASIC_PHYSICAL;
 	}
 }
-EAttackElement stringToWeakness ( std::string weakness )
+EAttackElement stringToAttackElement ( std::string element )
 {
-	if ( weakness == "Cut" )
+	if ( element == "Cut" )
 	{
 		return Cut;
 	}
-	else if ( weakness == "Crush" )
+	else if ( element == "Crush" )
 	{
 		return Crush;
 	}
-	else if ( weakness == "Stab" )
+	else if ( element == "Stab" )
 	{
 		return Stab;
 	}
-	else if ( weakness == "Lightning" )
+	else if ( element == "Lightning" )
 	{
 		return Lightning;
 	}
-	else if ( weakness == "Fire" )
+	else if ( element == "Fire" )
 	{
 		return Fire;
 	}
-	else if ( weakness == "Ice" )
+	else if ( element == "Ice" )
 	{
 		return Ice;
 	}
-	else if ( weakness == "Arcane" )
+	else if ( element == "Arcane" )
 	{
 		return Arcane;
 	}
@@ -457,10 +460,59 @@ EAttackElement stringToWeakness ( std::string weakness )
 		return None;
 	}
 }
+EAttackType stringToAttackType(std::string type)
+{
+	if(type == "Physical")
+	{
+		return Physical;
+	}
+	else if(type == "Magical")
+	{
+		return Magical;
+	}
+	else
+	{
+		return Both;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Scene management
 //-----------------------------------------------------------------------------
+void AttackSetup()
+{
+	TiXmlHandle hAttackDoc(&attackDoc);
+	TiXmlElement* pElem;
+	TiXmlHandle hRoot(0);
+
+	pElem=hAttackDoc.FirstChildElement().Element();
+	if(!pElem) return;
+	hRoot=TiXmlHandle(pElem);
+
+	pElem=hRoot.FirstChild( "Attacks" ).FirstChild().Element();
+	if(!pElem); return;
+	for(pElem; pElem; pElem=pElem->NextSiblingElement())
+	{
+		std::string name = pElem->Attribute("Name");
+		EAttackType type = stringToAttackType(pElem->Attribute("Type"));
+		EAttackElement element = stringToAttackElement( pElem->Attribute("Element") );
+
+		TInt32 cost,recoil;
+		TFloat32 damage;
+		pElem->QueryIntAttribute("Cost",&cost);
+		pElem->QueryFloatAttribute("Damage",&damage);
+		pElem->QueryIntAttribute("recoil",&recoil);
+
+		SWeakness weakness;
+		weakness.element = stringToAttackElement( pElem->Attribute("AddedWeakness") );
+		weakness.modifier = 0;
+		weakness.turns = -1;
+		vector<SWeakness> weaknessList;
+		weaknessList.push_back(weakness);
+
+		ListOfAttacks.push_back(CAttack(name,type,element,cost,damage,weaknessList,recoil));
+	}
+}
 // Setup Character templates using XML
 void TemplateSetup()
 {
@@ -505,7 +557,7 @@ void TemplateSetup()
 		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence3") ) );
 		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence4") ) );
 
-		EAttackElement weak = stringToWeakness( pElem->Attribute("Weakness") );
+		EAttackElement weak = stringToAttackElement( pElem->Attribute("Weakness") );
 
 		TInt32 AI;
 		pElem->QueryIntAttribute("AI", &AI);

@@ -47,7 +47,7 @@ public:
 		m_Stats.strength = st;
 		m_Stats.intelligence = in;
 		m_Stats.speed = sp;
-		m_Weakness.element = weak;
+		m_BaseWeakness.element = weak;
 		m_AI = AI;
 
 		for(int i = 0; i < NumAttacks; i++)
@@ -76,7 +76,7 @@ private:
 	SStats  m_Stats;
 	vector<SAttack> m_Attacks;
 	vector<SDefence> m_Defences;
-	SWeakness m_Weakness;
+	SWeakness m_BaseWeakness;
 	TInt32 m_AI;
 
 
@@ -126,9 +126,9 @@ public:
 		return m_Defences.size();
 	}
 
-	EAttackElement GetWeakness()
+	SWeakness GetWeakness()
 	{
-		return m_Weakness.element;
+		return m_BaseWeakness;
 	};
 	TInt32 GetAI()
 	{
@@ -184,6 +184,7 @@ private:
 	int m_PoisonCount;
 
 	vector<SInventoryItem> m_Inventory;
+	vector<SWeakness> m_WeaknessList;
 
 	bool m_DefendLast; // A bool to decide if the character defended last turn and alter the chance of defending for the next turn
 
@@ -217,6 +218,11 @@ public:
 	CCharTemplate* GetTemplate()
 	{
 		return m_CharTemplate;
+	}
+
+	void AddWeakness(SWeakness newWeakness)
+	{
+		m_WeaknessList.push_back(newWeakness);
 	}
 
 	// Returns true if the character is dead and false if they are alive

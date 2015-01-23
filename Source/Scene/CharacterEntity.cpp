@@ -80,6 +80,7 @@ CCharEntity::CCharEntity
 	m_CurrentDefence = -1;
 	m_Defend = false;
 	m_DefendLast = false;
+	m_WeaknessList.push_back(charTemplate->GetWeakness());
 }
 
 // Used to get a string of the attack for outputing the name of the attack
@@ -232,7 +233,7 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 
 		for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 		{
-			if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness() == m_CharTemplate->GetAttack(i).element)
+			if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).element)
 			{
 				weaknessAttack = i;
 				foeWeakness = true;
@@ -361,7 +362,7 @@ void CCharEntity::Planning( SMessage msg )
 				bool weakness = false;
 				for(auto it = Allies.begin(); it != Allies.end(); it++)
 				{
-					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
+					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness().element;
 					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
 					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 					{
@@ -382,7 +383,7 @@ void CCharEntity::Planning( SMessage msg )
 				bool weakness = false;
 				for(auto it = Enemies.begin(); it != Enemies.end(); it++)
 				{
-					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness();
+					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness().element;
 					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
 					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 					{
@@ -405,7 +406,7 @@ void CCharEntity::Planning( SMessage msg )
 
 			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 			{
-				if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness() == m_CharTemplate->GetAttack(i).element)
+				if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).element)
 				{
 					weaknessAttack = i;
 					targetWeakness = true;
@@ -493,7 +494,7 @@ void CCharEntity::Planning( SMessage msg )
 void CCharEntity::TakingDamage( SMessage msg )
 {
 	float defence = 1.0f;  //A modifier for the damage taken by the character.
-	if ( m_Defend )
+	if ( m_Defend && msg.attack.type != Recoil )
 	{
 		SDefence pick = m_CharTemplate->GetDefence(m_CurrentDefence);
 		if ( pick.type == Regular )
@@ -528,7 +529,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 		m_Defend = false;
 		m_CurrentDefence = -1;
 	}
-	if ( msg.attack.element == m_CharTemplate->GetWeakness() )
+	if ( msg.attack.element == m_CharTemplate->GetWeakness().element )
 	{
 		defence *= 2;
 	}
@@ -559,14 +560,14 @@ bool CCharEntity::Update( TFloat32 updateTime )
 				}
 				break;
 			case Msg_HealthRestored:
-				m_CurrentHealth += msg.itemEffect;
+				m_CurrentHealth += msg.item.value;
 				if ( m_CurrentHealth > m_CharTemplate->GetMaxHealth() )
 				{
 					m_CurrentHealth = m_CharTemplate->GetMaxHealth();
 				}
 				break;
 			case Msg_MagicRestored:
-				m_CurrentMagic += msg.itemEffect;
+				m_CurrentMagic += msg.item.value;
 				if(m_CurrentMagic > m_CharTemplate->GetMaxMagic())
 				{
 					m_CurrentMagic = m_CharTemplate->GetMaxMagic();
@@ -745,8 +746,7 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_HealthRestored;
 					msg.from = GetUID();
-					msg.itemType = restoreHealth;
-					msg.itemEffect = m_Inventory[i].item.value;
+					msg.item = m_Inventory[i].item;
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),current,msg);
@@ -779,8 +779,7 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_MagicRestored;
 					msg.from = GetUID();
-					msg.itemType = restoreMana;
-					msg.itemEffect = m_Inventory[i].item.value;
+					msg.item = m_Inventory[i].item;
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),current,msg);
@@ -809,8 +808,7 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_Revive;
 					msg.from = GetUID();
-					msg.itemType = revive;
-					msg.itemEffect = m_Inventory[i].item.value;
+					msg.item = m_Inventory[i].item;
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),target,msg);

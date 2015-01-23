@@ -43,8 +43,7 @@ struct SMessage
 	EMessageType type;
 	TEntityUID   from;
 	SAttack      attack;
-	int          itemEffect;
-	EEffect      itemType;
+	SItem        item;
 	int order;  // The position in the attack order the current actor is
 };
 

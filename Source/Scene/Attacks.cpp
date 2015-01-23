@@ -1,4 +1,6 @@
 #include "Attacks.h"
+#include "EntityManager.h"
+#include "Externals.h"
 
 namespace gen
 {
@@ -18,9 +20,34 @@ CAttack::CAttack(std::string name,EAttackType type,EAttackElement element,TInt32
 	}
 }
 
-SAttack CAttack::Attack(TEntityUID attacker,TEntityUID target)
+SAttack CAttack::Attack(TEntityUID attacker)
 {
-	return LIGHTNING;
+	for(auto it = m_AddWeakness.begin(); it != m_AddWeakness.end(); it++)
+	{
+		if((*it).element != None)
+		{
+			EntityManager.GetCharEntity(attacker)->AddWeakness(*it);
+		}
+	}
+	if(m_Recoil > 0)
+	{
+		SMessage msg;
+		SAttack recoil;
+		recoil.cost = 0;
+		recoil.damage = m_Damage * m_Recoil;
+		recoil.element = Recoil;
+		recoil.type = Both;
+		msg.type = Msg_Attacked;
+		Messenger.SendMessage(attacker,msg);
+	}
+
+	SAttack attack;
+	attack.cost = m_Cost;
+	attack.damage = m_Damage;
+	attack.element = m_Element;
+	attack.type = m_Type;
+
+	return attack;
 }
 
 }

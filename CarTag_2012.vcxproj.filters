@@ -128,6 +128,12 @@
     <ClCompile Include="Source\Scene\Attacks.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\Items.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Defence.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Scene\Camera.h">
@@ -272,5 +278,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Characters.xml" />
+    <Xml Include="Attacks.xml" />
   </ItemGroup>
 </Project>

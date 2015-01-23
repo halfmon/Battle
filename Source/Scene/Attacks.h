@@ -23,7 +23,8 @@ enum EAttackElement
 	Fire,
 	Ice,
 	Arcane,
-	None
+	None,
+	Recoil
 };
 
 struct SWeakness
@@ -64,7 +65,7 @@ private:
 public:
 	CAttack(std::string name,EAttackType type, EAttackElement element, TInt32 cost, TFloat32 damage, vector<SWeakness> addWeakness, TFloat32 recoil);
 
-	SAttack Attack(TEntityUID attacker, TEntityUID target);
+	SAttack Attack(TEntityUID attacker);
 
 	std::string GetName()
 	{
@@ -73,6 +74,18 @@ public:
 	TFloat32 GetDamage()
 	{
 		return m_Damage;
+	}
+	TInt32 GetCost()
+	{
+		return m_Cost;
+	}
+	EAttackType GetType()
+	{
+		return m_Type;
+	}
+	EAttackElement GetElement()
+	{
+		return m_Element;
 	}
 };
 

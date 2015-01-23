@@ -1,11 +1,14 @@
 #pragma once
 
+#include <vector>
+
 #include "Defines.h"
+#include "Entity.h"
 
 namespace gen
 {
 
-enum EEffect
+enum EItemEffect
 {
 	restoreHealth,
 	restoreMana,
@@ -15,8 +18,8 @@ enum EEffect
 
 struct SItem
 {
-	string name;
-	EEffect effect;
+	std::string name;
+	EItemEffect effect;
 	TInt32 value;
 };
 
@@ -29,4 +32,17 @@ const SItem SUPER_MAGIC_POTION = { "Super Magic Potion", restoreMana, 90 };
 const SItem VENOM = { "Venom", poison, 10 };
 
 const SItem REVIVE = { "Revive", revive, 50 };
+
+class CItem
+{
+private:
+	std::string m_Name;
+	EItemEffect m_Effect;
+	TInt32 m_Value;
+
+public:
+	CItem(std::string name,EItemEffect effect,TInt32 value);
+
+	SItem Use(TEntityUID user);
+};
 }

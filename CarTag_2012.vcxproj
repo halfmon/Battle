@@ -122,9 +122,11 @@
     <ClCompile Include="Source\Scene\Attacks.cpp" />
     <ClCompile Include="Source\Scene\Camera.cpp" />
     <ClCompile Include="Source\Scene\CharacterEntity.cpp" />
+    <ClCompile Include="Source\Scene\Defence.cpp" />
     <ClCompile Include="Source\Scene\Entity.cpp" />
     <ClCompile Include="Source\Scene\EntityManager.cpp" />
     <ClCompile Include="Source\Scene\ItemEffect.cpp" />
+    <ClCompile Include="Source\Scene\Items.cpp" />
     <ClCompile Include="Source\Scene\Light.cpp" />
     <ClCompile Include="Source\Scene\Messenger.cpp" />
     <ClCompile Include="Source\Common\CFatalException.cpp" />
@@ -206,6 +208,7 @@
     <None Include="Source\Render\VS_VertexLighting1NoTex.vsh" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="Attacks.xml" />
     <Xml Include="Characters.xml">
       <SubType>Designer</SubType>
     </Xml>
