@@ -5,8 +5,9 @@
 namespace gen
 {
 
-CDefence::CDefence(EDefenceType type,EAttackType attackRecivedType,EAttackElement element,TFloat32 modifier,TInt32 cost)
+CDefence::CDefence(std::string name,EDefenceType type,EAttackType attackRecivedType,EAttackElement element,TFloat32 modifier,TInt32 cost)
 {
+	m_Name = name;
 	m_Type = type;
 	m_AttackRecived = attackRecivedType;
 	m_Element = element;

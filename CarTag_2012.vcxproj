@@ -212,6 +212,8 @@
     <Xml Include="Characters.xml">
       <SubType>Designer</SubType>
     </Xml>
+    <Xml Include="Defences.xml" />
+    <Xml Include="Items.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

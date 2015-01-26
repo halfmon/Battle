@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<Level>
+  <Items>
+    <Item Name="Potion"             Effect="restoreHealth" Value="30"/>
+    <Item Name="Super Potion"       Effect="restoreHealth" Value="50"/>
+    <Item Name="Magic Potion"       Effect="restoreMana"   Value="40"/>
+    <Item Name="Super Magic Potion" Effect="restoreMana"   Value="90"/>
+    <Item Name="Venom"              Effect="poison"        Value="10"/>
+    <Item Name="Revive"             Effect="revive"        Value="50"/>
+  </Items>
+</Level>

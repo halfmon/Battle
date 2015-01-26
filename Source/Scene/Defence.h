@@ -42,6 +42,7 @@ const SDefence PAIN_SPLIT = { PainSplit, Both, None, 0.5f, 35 };
 class CDefence
 {
 private:
+	std::string m_Name;
 	EDefenceType m_Type;
 	EAttackType m_AttackRecived;
 	EAttackElement m_Element;
@@ -49,7 +50,7 @@ private:
 	TInt32 m_Cost;
 
 public:
-	CDefence(EDefenceType type,EAttackType attackRecivedType,EAttackElement element,TFloat32 modifier,TInt32 cost);
+	CDefence(std::string m_Name,EDefenceType type,EAttackType attackRecivedType,EAttackElement element,TFloat32 modifier,TInt32 cost);
 
 	SDefence Defend(TEntityUID Defender);
 };

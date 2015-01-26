@@ -77,6 +77,8 @@ vector<TEntityUID> Enemies;
 vector<TEntityUID> Allies;
 vector<TEntityUID> AttackOrder;
 vector<CAttack> ListOfAttacks;
+vector<CItem> ListOfItems;
+vector<CDefence> ListOfDefence;
 
 // Other scene elements
 const int NumTrees = 200;
@@ -89,6 +91,7 @@ int generalAI = 1;
 TInt32 NumTotal = 0;
 TiXmlDocument charDoc( "Characters.xml" );
 TiXmlDocument attackDoc("Attacks.xml");
+TiXmlDocument itemDoc("Items.xml");
 
 //Variables to be used with ant Tweak bar.
 extern TwBar* myBar;
@@ -475,10 +478,92 @@ EAttackType stringToAttackType(std::string type)
 		return Both;
 	}
 }
+EItemEffect stringToItemEffect(std::string effect)
+{
+	if(effect == "restoreHealth")
+	{
+		return restoreHealth;
+	}
+	else if(effect == "restoreMana")
+	{
+		return restoreMana;
+	}
+	else if(effect == "poison")
+	{
+		return poison;
+	}
+	else if(effect== "revive")
+	{
+		return revive;
+	}
+	else
+	{
+		return poison;
+	}
+	
+}
+EDefenceType stringToDefenceType(std::string type)
+{
+	if(type == "Regular")
+	{
+		return Regular;
+	}
+	else if(type == "Reflect")
+	{
+		return Reflect;
+	}
+	else if(type == "PainSplit")
+	{
+		return PainSplit;
+	}
+	else
+	{
+		return Regular;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Scene management
 //-----------------------------------------------------------------------------
+void DefenceSetup()
+{
+	TiXmlHandle hItemDoc(&itemDoc);
+	TiXmlElement* pElem;
+	TiXmlHandle hRoot(0);
+
+	pElem = hItemDoc.FirstChildElement().Element();
+	if(!pElem) return;
+	hRoot=TiXmlHandle(pElem);
+
+	pElem = hRoot.FirstChild("Defences").FirstChild().Element();
+	if(!pElem) return;
+	for(pElem; pElem; pElem=pElem->NextSiblingElement())
+	{
+		std::string name = pElem->Attribute("Name");
+	}
+}
+void ItemSetup()
+{
+	TiXmlHandle hItemDoc(&itemDoc);
+	TiXmlElement* pElem;
+	TiXmlHandle hRoot(0);
+
+	pElem = hItemDoc.FirstChildElement().Element();
+	if(!pElem) return;
+	hRoot=TiXmlHandle(pElem);
+
+	pElem = hRoot.FirstChild("Items").FirstChild().Element();
+	if(!pElem) return;
+	for(pElem; pElem; pElem=pElem->NextSiblingElement())
+	{
+		std::string name = pElem->Attribute("Name");
+		EItemEffect effect = stringToItemEffect( pElem->Attribute("Effect"));
+		int value;
+		pElem->QueryIntAttribute("Value",&value);
+
+		ListOfItems.push_back(CItem(name,effect,value));
+	}
+}
 void AttackSetup()
 {
 	TiXmlHandle hAttackDoc(&attackDoc);
@@ -490,25 +575,29 @@ void AttackSetup()
 	hRoot=TiXmlHandle(pElem);
 
 	pElem=hRoot.FirstChild( "Attacks" ).FirstChild().Element();
-	if(!pElem); return;
+	if(!pElem) return;
 	for(pElem; pElem; pElem=pElem->NextSiblingElement())
 	{
 		std::string name = pElem->Attribute("Name");
 		EAttackType type = stringToAttackType(pElem->Attribute("Type"));
 		EAttackElement element = stringToAttackElement( pElem->Attribute("Element") );
 
-		TInt32 cost,recoil;
-		TFloat32 damage;
+		vector<SWeakness> weaknessList;
+		TInt32 cost;
+		TFloat32 damage,recoil;
 		pElem->QueryIntAttribute("Cost",&cost);
 		pElem->QueryFloatAttribute("Damage",&damage);
-		pElem->QueryIntAttribute("recoil",&recoil);
+		pElem->QueryFloatAttribute("recoil",&recoil);
 
 		SWeakness weakness;
-		weakness.element = stringToAttackElement( pElem->Attribute("AddedWeakness") );
-		weakness.modifier = 0;
-		weakness.turns = -1;
-		vector<SWeakness> weaknessList;
-		weaknessList.push_back(weakness);
+		TiXmlElement* pElem2 = pElem->FirstChild("AddedWeakness")->FirstChildElement();
+		for(pElem2; pElem2; pElem2=pElem2->NextSiblingElement())
+		{
+			weakness.element = stringToAttackElement(pElem->Attribute("Element"));
+			pElem2->QueryFloatAttribute("Modifier",&weakness.modifier);
+			pElem2->QueryIntAttribute("Turns",&weakness.turns);
+			weaknessList.push_back(weakness);
+		}
 
 		ListOfAttacks.push_back(CAttack(name,type,element,cost,damage,weaknessList,recoil));
 	}
@@ -886,6 +975,12 @@ bool SceneSetup()
 	}
 	attackEffect = CAttackEffect( attacks, "Attack" );
 	itemEffect = CItemEffect( items, "Item" );
+
+	attackDoc.LoadFile();
+	AttackSetup();
+
+	itemDoc.LoadFile();
+	ItemSetup();
 
 	charDoc.LoadFile();
 	TemplateSetup();

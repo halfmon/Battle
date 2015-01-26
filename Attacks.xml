@@ -2,12 +2,26 @@
 
 <Level>
   <Attacks>
-    <Attack Name="Cut"       Type="Physical" Element="Cut"       Cost="0"  Damage="12" AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Crush"     Type="Physical" Element="Crush"     Cost="0"  Damage="8"  AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Stab"      Type="Physical" Element="Stab"      Cost="0"  Damage="10" AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Lightning" Type="Magical"  Element="Lightning" Cost="12" Damage="16" AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Fire"      Type="Magical"  Element="Fire"      Cost="5"  Damage="7"  AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Ice"       Type="Magical"  Element="Ice"       Cost="9"  Damage="10" AddedWeakness="None" Recoil="0"/>
-    <Attack Name="Arcane"    Type="Magical"  Element="Arcane"    Cost="10" Damage="12" AddedWeakness="None" Recoil="0"/>
+    <Attack Name="Cut" Type="Physical" Element="Cut" Cost="0" Damage="12" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Crush" Type="Physical" Element="Crush" Cost="0" Damage="8" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Stab"      Type="Physical" Element="Stab"      Cost="0"  Damage="10" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Lightning" Type="Magical"  Element="Lightning" Cost="12" Damage="16" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Fire"      Type="Magical"  Element="Fire"      Cost="5"  Damage="7"  Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Ice"       Type="Magical"  Element="Ice"       Cost="9"  Damage="10" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
+    <Attack Name="Arcane"    Type="Magical"  Element="Arcane"    Cost="10" Damage="12" Recoil="0">
+      <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
+    </Attack>
   </Attacks>
 </Level>

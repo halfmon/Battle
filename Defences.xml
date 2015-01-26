@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<Level>
+  <Defences>
+    <Defence Name="Basic Physical"    Type="Regular"   AttackReciveType="Physical" Element="None"      Modifier="0.75" Cost="0"/>
+    <Defence Name="Basic Magical"     Type="Regular"   AttackReciveType="Magical"  Element="None"      Modifier="0.75" Cost="0"/>
+    <Defence Name="Advanced Physical" Type="Regular"   AttackReciveType="Physical" Element="None"      Modifier="0.5"  Cost="20"/>
+    <Defence Name="Advanced Magical"  Type="Regular"   AttackReciveType="Magical"  Element="None"      Modifier="0.5"  Cost="20"/>
+    <Defence Name="Lightning Defence" Type="Regular"   AttackReciveType="Magical"  Element="Lightning" Modifier="0.25" Cost="30"/>
+    <Defence Name="Fire Defence"      Type="Regular"   AttackReciveType="Magical"  Element="Fire"      Modifier="0.25" Cost="30"/>
+    <Defence Name="Ice Defence"       Type="Regular"   AttackReciveType="Magical"  Element="Ice"       Modifier="0.25" Cost="30"/>
+    <Defence Name="Arcane Defence"    Type="Regular"   AttackReciveType="Magical"  Element="Arcane"    Modifier="0.25" Cost="30"/>
+    <Defence Name="Reflect"           Type="Reflect"   AttackReciveType="Both"     Element="None"      Modifier="0.5"  Cost="70"/>
+    <Defence Name="Pain Split"        Type="PainSplit" AttackReciveType="Both"     Element="None"      Modifier="0.5"  Cost="70"/>
+  </Defences>
+</Level>

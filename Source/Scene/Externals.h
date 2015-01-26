@@ -13,6 +13,10 @@ namespace gen
 	extern TInt32 NumTotal;
 	extern vector<TEntityUID> AttackOrder;
 
+	extern vector<CAttack> ListOfAttacks;
+	extern vector<CItem> ListOfItems;
+	extern vector<CDefence> ListOfDefence;
+
 	extern CAttackEffect attackEffect;
 	extern CItemEffect itemEffect;
 

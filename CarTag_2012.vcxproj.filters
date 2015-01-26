@@ -279,5 +279,7 @@
   <ItemGroup>
     <Xml Include="Characters.xml" />
     <Xml Include="Attacks.xml" />
+    <Xml Include="Items.xml" />
+    <Xml Include="Defences.xml" />
   </ItemGroup>
 </Project>
