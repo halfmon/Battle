@@ -20,6 +20,8 @@
 #include "Battle.h"
 #include "tinyxml.h"
 #include "attacks.h"
+#include "fmod.h"
+#include "fmod_event.h"
 
 namespace gen
 {
@@ -87,11 +89,14 @@ SColourRGBA AmbientLight;
 CLight* Lights[NumLights];
 CCamera* MainCamera;
 
+int numTurns = 0;
+
 int generalAI = 1;
 TInt32 NumTotal = 0;
 TiXmlDocument charDoc( "Characters.xml" );
-TiXmlDocument attackDoc("Attacks.xml");
-TiXmlDocument itemDoc("Items.xml");
+TiXmlDocument attackDoc( "Attacks.xml" );
+TiXmlDocument defenceDoc( "Defences.xml" );
+TiXmlDocument itemDoc( "Items.xml" );
 
 //Variables to be used with ant Tweak bar.
 extern TwBar* myBar;
@@ -115,7 +120,7 @@ bool EnemyAlive()
 	TUInt32 alive = 0;	
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity( *it )->isDead() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity( *it ))->isDead() )
 		{
 			alive++;
 		}
@@ -135,7 +140,7 @@ bool AllyAlive()
 	TUInt32 alive = 0;
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity( *it )->isDead() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity( *it ))->isDead() )
 		{
 			alive++;
 		}
@@ -155,7 +160,7 @@ TEntityUID DeadEnemy()
 {
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(*it)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() )
 		{
 			return *it;
 		}
@@ -167,7 +172,7 @@ TEntityUID DeadAlly()
 {
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(*it)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() )
 		{
 			return *it;
 		}
@@ -183,7 +188,7 @@ TEntityUID RandomEnemy()
 	do
 	{
 		choice = Random(0, Enemies.size()-1);
-		if ( EntityManager.GetCharEntity(Enemies[choice])->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(Enemies[choice]))->isDead() )
 		{
 			dead = true;
 		}
@@ -202,7 +207,7 @@ TEntityUID RandomAlly()
 	do
 	{
 		choice = Random(0, Allies.size()-1);
-		if ( EntityManager.GetCharEntity(Allies[choice])->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(Allies[choice]))->isDead() )
 		{
 			dead = true;
 		}
@@ -220,14 +225,15 @@ TEntityUID LowestHealthEnemy()
 	TEntityUID target = Enemies[0];	
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(target)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(target))->isDead() )
 		{
 			target = *it;
 		}
 	}
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity(*it)->isDead() && EntityManager.GetCharEntity(*it)->GetCurrentHealth() < EntityManager.GetCharEntity(target)->GetCurrentHealth() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() && 
+			 static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetCurrentHealth() < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth() )
 		{
 			target = *it;
 		}
@@ -240,14 +246,15 @@ TEntityUID LowestHealthAlly()
 	TEntityUID target = Allies[0];	
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(target)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(target))->isDead() )
 		{
 			target = *it;
 		}
 	}
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity(*it)->isDead() && EntityManager.GetCharEntity(*it)->GetCurrentHealth() < EntityManager.GetCharEntity(target)->GetCurrentHealth() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() && 
+			 static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetCurrentHealth() < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth() )
 		{
 			target = *it;
 		}
@@ -261,14 +268,15 @@ TEntityUID LowestMagicEnemy()
 	TEntityUID target = Enemies[0];	
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(target)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(target))->isDead() )
 		{
 			target = *it;
 		}
 	}
 	for ( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity(*it)->isDead() && EntityManager.GetCharEntity(*it)->GetCurrentMagic() < EntityManager.GetCharEntity(target)->GetCurrentMagic() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() && 
+			 static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetCurrentMagic() < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentMagic() )
 		{
 			target = *it;
 		}
@@ -281,14 +289,14 @@ TEntityUID LowestMagicAlly()
 	TEntityUID target = Allies[0];	
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( EntityManager.GetCharEntity(target)->isDead() )
+		if ( static_cast<CCharEntity*>(EntityManager.GetEntity(target))->isDead() )
 		{
 			target = *it;
 		}
 	}
 	for ( auto it = Allies.begin(); it != Allies.end(); it++ )
 	{
-		if ( !EntityManager.GetCharEntity(*it)->isDead() && EntityManager.GetCharEntity(*it)->GetCurrentMagic() < EntityManager.GetCharEntity(target)->GetCurrentMagic() )
+		if ( !static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead() && static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetCurrentMagic() < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentMagic() )
 		{
 			target = *it;
 		}
@@ -313,8 +321,8 @@ void SetUpAttackOrder()
 	{
 		for ( int j = (i+1); j < (NumTotal); j++ )
 		{
-			TInt32 character1Speed = EntityManager.GetCharEntity( AttackOrder[i] )->GetTemplate()->GetSpeed();
-			TInt32 character2Speed = EntityManager.GetCharEntity( AttackOrder[j] )->GetTemplate()->GetSpeed();
+			TInt32 character1Speed = static_cast<CCharEntity*>(EntityManager.GetEntity( AttackOrder[i] ))->GetTemplate()->GetSpeed();
+			TInt32 character2Speed = static_cast<CCharEntity*>(EntityManager.GetEntity( AttackOrder[j] ))->GetTemplate()->GetSpeed();
 			TEntityUID temp = NULL;
 
 			if ( character1Speed < character2Speed )
@@ -326,107 +334,29 @@ void SetUpAttackOrder()
 		}
 	}
 }
-//void CleanAttackOrder()
-//{
-//	vector<int> deadPos;
-//	for(int i = 0; i < AttackOrder.size(); i++)
-//	{
-//		if(EntityManager.GetCharEntity(AttackOrder[i])->isDead())
-//		{
-//			deadPos.push_back(i);
-//		}
-//	}
-//
-//	for(int i =0; i < deadPos.size(); i++)
-//	{
-//		//EntityManager.DestroyEntity(AttackOrder[deadPos[i]]);
-//		AttackOrder.erase(AttackOrder.begin()+deadPos[i]);
-//		NumTotal--;
-//	}
-//}
 
 // Functions for getting the required variable type when reading in from an XML file.
-SAttack stringToAttack ( string attack )
+CAttack stringToAttack ( string attack )
 {
-	if ( attack == "Cut" )
+	for( int i = 0; i < static_cast<int>(ListOfAttacks.size()); i++ )
 	{
-		 return CUT;
+		if( attack == ListOfAttacks[i].GetName() )
+		{
+			return ListOfAttacks[i];
+		}
 	}
-	else if ( attack == "Crush" )
-	{
-		return CRUSH;
-	}
-	else if ( attack == "Stab" )
-	{
-		return STAB;
-	}
-	else if ( attack == "Lightning" )
-	{
-		return LIGHTNING;
-	}
-	else if ( attack == "Fire" )
-	{
-		return FIRE;
-	}
-	else if ( attack == "Ice" )
-	{
-		return ICE;
-	}
-	else if ( attack == "Arcane" )
-	{
-		return ARCANE;
-	}
-	else
-	{
-		return CUT;
-	}
+	return ListOfAttacks[0];
 }
-SDefence stringToDefence ( string defence )
+CDefence stringToDefence ( string defence )
 {
-	if ( defence == "BASIC_P" )
+	for (int i = 0; i < static_cast<int>(ListOfAttacks.size()); i++)
 	{
-		return BASIC_PHYSICAL;
+		if (defence== ListOfDefence[i].GetName())
+		{
+			return ListOfDefence[i];
+		}
 	}
-	else if ( defence == "BASIC_M" )
-	{
-		return BASIC_MAGICAL;
-	}
-	else if ( defence == "ADV_P" )
-	{
-		return ADVANCED_PHYSICAL;
-	}
-	else if ( defence == "ADV_M" )
-	{
-		return ADVANCED_MAGICAL;
-	}
-	else if ( defence == "LIGHT" )
-	{
-		return LIGHTNING_DEFENCE;
-	}
-	else if ( defence == "FIRE" )
-	{
-		return FIRE_DEFENCE;
-	}
-	else if ( defence == "ICE" )
-	{
-		return ICE_DEFENCE;
-	}
-	else if ( defence == "ARCANE" )
-	{
-		return ARCANE_DEFENCE;
-	}
-	else if ( defence == "REFLECT" )
-	{
-		return REFLECT;
-	}
-	else if ( defence == "PAIN_SPLIT" )
-	{
-		return PAIN_SPLIT;
-	}
-	else
-	{
-		return BASIC_PHYSICAL;
-	}
+	return ListOfDefence[0];
 }
 EAttackElement stringToAttackElement ( std::string element )
 {
@@ -527,7 +457,7 @@ EDefenceType stringToDefenceType(std::string type)
 //-----------------------------------------------------------------------------
 void DefenceSetup()
 {
-	TiXmlHandle hItemDoc(&itemDoc);
+	TiXmlHandle hItemDoc(&defenceDoc);
 	TiXmlElement* pElem;
 	TiXmlHandle hRoot(0);
 
@@ -540,6 +470,15 @@ void DefenceSetup()
 	for(pElem; pElem; pElem=pElem->NextSiblingElement())
 	{
 		std::string name = pElem->Attribute("Name");
+		EDefenceType type = stringToDefenceType(pElem->Attribute("Type"));
+		EAttackType reciveType = stringToAttackType(pElem->Attribute("AttackReciveType"));
+		EAttackElement element = stringToAttackElement(pElem->Attribute("Element"));
+		TFloat32 modifier;
+		pElem->QueryFloatAttribute("Modifier", &modifier);
+		TInt32 cost;
+		pElem->QueryIntAttribute("Cost", &cost);
+
+		ListOfDefence.push_back(CDefence( name, type, reciveType, element, modifier, cost ));
 	}
 }
 void ItemSetup()
@@ -590,10 +529,12 @@ void AttackSetup()
 		pElem->QueryFloatAttribute("recoil",&recoil);
 
 		SWeakness weakness;
-		TiXmlElement* pElem2 = pElem->FirstChild("AddedWeakness")->FirstChildElement();
+		TiXmlHandle hWeakness(0);
+		hWeakness=TiXmlHandle(pElem);
+		TiXmlElement* pElem2 = hWeakness.FirstChild().Element();
 		for(pElem2; pElem2; pElem2=pElem2->NextSiblingElement())
 		{
-			weakness.element = stringToAttackElement(pElem->Attribute("Element"));
+			weakness.element = stringToAttackElement(pElem2->Attribute("Element"));
 			pElem2->QueryFloatAttribute("Modifier",&weakness.modifier);
 			pElem2->QueryIntAttribute("Turns",&weakness.turns);
 			weaknessList.push_back(weakness);
@@ -634,22 +575,32 @@ void TemplateSetup()
 		pElem->QueryIntAttribute("Inteligence", &in );
 		pElem->QueryIntAttribute("Speed", &sp );
 
-		vector<SAttack> templateAttacks;
-		templateAttacks.push_back( stringToAttack( pElem->Attribute("Attack1") ) );
-		templateAttacks.push_back( stringToAttack( pElem->Attribute("Attack2") ) );
-		templateAttacks.push_back( stringToAttack( pElem->Attribute("Attack3") ) );
-		templateAttacks.push_back( stringToAttack( pElem->Attribute("Attack4") ) );
-
-		vector<SDefence> templateDefences;
-		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence1") ) );
-		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence2") ) );
-		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence3") ) );
-		templateDefences.push_back( stringToDefence( pElem->Attribute("Defence4") ) );
-
 		EAttackElement weak = stringToAttackElement( pElem->Attribute("Weakness") );
 
 		TInt32 AI;
 		pElem->QueryIntAttribute("AI", &AI);
+
+		vector<CAttack> templateAttacks;
+
+		TiXmlHandle hAttack(0);
+		hAttack=TiXmlHandle(pElem);
+		TiXmlElement* pElem2 = hAttack.FirstChild("Attacks").FirstChild().Element();
+		for ( pElem2; pElem2; pElem2=pElem2->NextSiblingElement() )
+		{
+			std::string nameAttack = pElem2->Attribute("Name");
+			templateAttacks.push_back( stringToAttack( nameAttack ) );
+		}
+
+		vector<CDefence> templateDefences;
+
+		TiXmlHandle hDefence(0);
+		hDefence=TiXmlHandle(pElem);
+		pElem2 = hDefence.FirstChild("Defences").FirstChild().Element();
+		for ( pElem2; pElem2; pElem2=pElem2->NextSiblingElement() )
+		{
+			std::string nameDefence = pElem2->Attribute("Name");
+			templateDefences.push_back( stringToDefence( nameDefence ) );
+		}
 
 		EntityManager.CreateCharTemplate( type, name, mesh, HP, MP, st, in, sp, templateAttacks, templateDefences, weak, AI );
 	}
@@ -741,56 +692,130 @@ void TW_CALL ResetChar(void* clientData)
 
 	attackEffect.Reset();
 	itemEffect.Reset();
+
+	numTurns = 0;
 }
 
 void TW_CALL AddPotionE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( POTION );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddSuperPotionE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( SUPER_POTION );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Super Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddMagicPotionE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( MAGIC_POTION );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Magic Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddSuperMagicPotionE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( SUPER_MAGIC_POTION );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Super Magic Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddVenomE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( VENOM );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Venom" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddReviveE(void* clientData)
 {
-	EntityManager.GetCharEntity( Enemies[enemyItem] )->AddItemToInvantory( REVIVE );
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Revieve" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Enemies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 
 void TW_CALL AddPotionA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(POTION);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddSuperPotionA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(SUPER_POTION);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Super Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddMagicPotionA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(MAGIC_POTION);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Magic Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddSuperMagicPotionA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(SUPER_MAGIC_POTION);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Super Magic Potion" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddVenomA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(VENOM);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Venom" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 void TW_CALL AddReviveA(void* clientData)
 {
-	EntityManager.GetCharEntity(Allies[allyItem])->AddItemToInvantory(REVIVE);
+	for( auto it =  ListOfItems.begin(); it != ListOfItems.end(); it++ )
+	{
+		if( (*it).GetName() == "Revive" )
+		{
+			static_cast<CCharEntity*>(EntityManager.GetEntity( Allies[enemyItem] ))->AddItemToInvantory( *it );
+		}
+	}
 }
 
 void TW_CALL InventoryRandom(void* clientData)
@@ -799,70 +824,86 @@ void TW_CALL InventoryRandom(void* clientData)
 
 	for( auto it = Enemies.begin(); it != Enemies.end(); it++ )
 	{
-		itemNum = Random(0,15);
+		for( auto it2 = ListOfItems.begin(); it2 != ListOfItems.end(); it2++ )
+		{
+			itemNum = Random(0,15);
+			for(int i = 0; i < itemNum; i++)
+			{
+				static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(*it2);
+			}
+		}
+		/*itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(SUPER_POTION);
 		}
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(MAGIC_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(MAGIC_POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_MAGIC_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(SUPER_MAGIC_POTION);
 		}
 		itemNum = Random(0,10);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(VENOM);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(VENOM);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(REVIVE);
-		}
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(REVIVE);
+		}*/
 	}
 
 	for(auto it = Allies.begin(); it != Allies.end(); it++)
 	{
-		itemNum = Random(0,15);
+		for( auto it2 = ListOfItems.begin(); it2 != ListOfItems.end(); it2++ )
+		{
+			itemNum = Random(0,15);
+			for(int i = 0; i < itemNum; i++)
+			{
+				static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(*it2);
+			}
+		}
+		/*itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(SUPER_POTION);
 		}
 		itemNum = Random(0,15);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(MAGIC_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(MAGIC_POTION);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(SUPER_MAGIC_POTION);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(SUPER_MAGIC_POTION);
 		}
 		itemNum = Random(0,10);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(VENOM);
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(VENOM);
 		}
 		itemNum = Random(0,5);
 		for(int i = 0; i < itemNum; i++)
 		{
-			EntityManager.GetCharEntity(*it)->AddItemToInvantory(REVIVE);
-		}
+			static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->AddItemToInvantory(REVIVE);
+		}*/
 	}
 }
 
@@ -978,6 +1019,9 @@ bool SceneSetup()
 
 	attackDoc.LoadFile();
 	AttackSetup();
+
+	defenceDoc.LoadFile();
+	DefenceSetup();
 
 	itemDoc.LoadFile();
 	ItemSetup();
@@ -1130,7 +1174,7 @@ void RenderSceneText( float updateTime )
 	for ( auto it = Allies.begin(); it != Allies.end(); ++it)
 	{
 		// Get car entity, then world position
-		CCharEntity* allyEntity = EntityManager.GetCharEntity( *it );
+		CCharEntity* allyEntity = static_cast<CCharEntity*>(EntityManager.GetEntity( *it ));
 		CVector3 allyPt = allyEntity->Position();
 
 		// Convert car world position to pixel coordinate (picking in Camera class)
@@ -1173,7 +1217,7 @@ void RenderSceneText( float updateTime )
 	for ( auto it = Enemies.begin(); it != Enemies.end(); ++it)
 	{
 		// Get car entity, then world position
-		CCharEntity* enemyEntity = EntityManager.GetCharEntity( *it );
+		CCharEntity* enemyEntity = static_cast<CCharEntity*>(EntityManager.GetEntity( *it ));
 		CVector3 enemyPt = enemyEntity->Position();
 
 		// Convert car world position to pixel coordinate (picking in Camera class)
@@ -1213,11 +1257,13 @@ void RenderSceneText( float updateTime )
 
 	if ( !EnemyAlive() )
 	{
-		outText << "Allies Win";
+		outText << "Allies Win" << std::endl 
+			    << "Number of turns in battle: " << numTurns;
 	}
 	else if ( !AllyAlive() )
 	{
-		outText << "Enemies Win";
+		outText << "Enemies Win" << std::endl 
+			    << "Number of turns in battle: " << numTurns;
 	}
 	else
 	{
@@ -1264,6 +1310,8 @@ void UpdateScene( float updateTime )
 		started = false;
 		attackEffect.Reset();
 		itemEffect.Reset();
+
+		numTurns = 0;
 	}
 
 	if (KeyHit( Key_1 ))

@@ -13,6 +13,9 @@
 #include "Input.h"
 #include "CTimer.h"
 #include "Battle.h"
+#include "fmod.h"
+#include "fmod_event.h"
+#include "fmod_errors.h"
 
 namespace gen
 {
@@ -46,6 +49,43 @@ CTimer Timer;
 
 TwBar *myBar;
 TwBar *itemBar;
+
+//FMOD Variables
+FMOD_SYSTEM* system;
+FMOD_SOUND* backgroundMusic;
+FMOD_CHANNEL *backgroundChannel;
+
+bool FMODSetup()
+{
+	FMOD_RESULT result;
+
+	result = FMOD_System_Create(&system);
+	if (result != FMOD_OK)
+	{
+		return false;
+	}
+
+	result = FMOD_System_Init( system, 100, FMOD_INIT_NORMAL, 0 );
+	if (result != FMOD_OK)
+	{
+		return false;
+	}
+
+	result = FMOD_System_CreateSound(system, "Mouse Trap.mp3", FMOD_DEFAULT, 0, &backgroundMusic );
+	if (result != FMOD_OK)
+	{
+		return false;
+	}
+
+	result = FMOD_System_PlaySound(system,FMOD_CHANNEL_FREE, backgroundMusic, false, &backgroundChannel);
+	if (result != FMOD_OK)
+	{
+		return false;
+	}
+
+
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 // D3D management
@@ -317,7 +357,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
 	if (gen::D3DSetup( hWnd ))
     {
         // Prepare the scene
-        if (gen::SceneSetup())
+        if (gen::SceneSetup() && gen::FMODSetup())
         {
             // Show the window
             ShowWindow( hWnd, SW_SHOWDEFAULT );

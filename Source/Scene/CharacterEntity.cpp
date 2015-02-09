@@ -18,22 +18,28 @@ namespace gen
 attack that cost the least if it is magical. */
 TInt32 PickBestAttack( CCharTemplate* attackList, TInt32 targetHealth, TInt32 attackerMagic )
 {
-	SAttack bestAttack = attackList->GetAttack(0);
+	CAttack preAttack = attackList->GetAttack(0);
+	int preAttackNum = 0;
+	CAttack bestAttack = attackList->GetAttack(0);
 	int attackNum = 0;
 	for ( int i = 1; i < attackList->GetAttackNum(); i++ )
 	{
-		SAttack currentAttack = attackList->GetAttack(i);
-		if ( currentAttack.type == Magical )
+		CAttack currentAttack = attackList->GetAttack(i);
+		if ( currentAttack.GetType() == Magical )
 		{
-			if ( attackerMagic - currentAttack.cost >= 0 )
+			if ( attackerMagic - currentAttack.GetCost() >= 0 )
 			{
-				if ( bestAttack.cost > currentAttack.cost && targetHealth - bestAttack.damage <= 0 && targetHealth - currentAttack.damage <= 0 )
+				if ( bestAttack.GetCost() > currentAttack.GetCost() && targetHealth - bestAttack.GetDamage() <= 0 && targetHealth - currentAttack.GetDamage() <= 0 )
 				{
+					preAttack = bestAttack;
+					preAttackNum = attackNum;
 					bestAttack = currentAttack;
 					attackNum = i;
 				}
-				else if ( bestAttack.damage < currentAttack.damage )
-				{			
+				else if ( bestAttack.GetDamage() < currentAttack.GetDamage() )
+				{	
+					preAttack = bestAttack;
+					preAttackNum = attackNum;
 					bestAttack = currentAttack;
 					attackNum = i;
 				}
@@ -41,13 +47,17 @@ TInt32 PickBestAttack( CCharTemplate* attackList, TInt32 targetHealth, TInt32 at
 		}
 		else
 		{
-			if ( bestAttack.damage > currentAttack.damage && targetHealth - bestAttack.damage <= 0 && targetHealth - currentAttack.damage <= 0 )
+			if ( bestAttack.GetDamage() >  currentAttack.GetDamage() && targetHealth - bestAttack.GetDamage() <= 0 && targetHealth -  currentAttack.GetDamage() <= 0 )
 			{
+				preAttack = bestAttack;
+				preAttackNum = attackNum;
 				bestAttack = currentAttack;
 				attackNum = i;
 			}
-			else if ( bestAttack.damage < currentAttack.damage )
+			else if ( bestAttack.GetDamage() <  currentAttack.GetDamage() )
 			{
+				preAttack = bestAttack;
+				preAttackNum = attackNum;
 				bestAttack = currentAttack;
 				attackNum = i;
 			}
@@ -90,32 +100,32 @@ string CCharEntity::GetAttackElement()
 	{
 		return "???";
 	}
-	SAttack attack = m_CharTemplate->GetAttack(m_CurrentAttack);
-	if ( attack.element == Cut )
+	CAttack attack = m_CharTemplate->GetAttack(m_CurrentAttack);
+	if ( attack.GetElement() == Cut )
 	{
 		 return "Cut";
 	}
-	else if ( attack.element == Crush )
+	else if ( attack.GetElement() == Crush )
 	{
 		return "Crush";
 	}
-	else if ( attack.element == Stab )
+	else if ( attack.GetElement() == Stab )
 	{
 		return "Stab";
 	}
-	else if ( attack.element == Lightning )
+	else if ( attack.GetElement() == Lightning )
 	{
 		return "Lightning";
 	}
-	else if ( attack.element == Fire )
+	else if ( attack.GetElement() == Fire )
 	{
 		return "Fire";
 	}
-	else if ( attack.element == Ice )
+	else if ( attack.GetElement() == Ice )
 	{
 		return "Ice";
 	}
-	else if ( attack.element == Arcane )
+	else if ( attack.GetElement() == Arcane )
 	{
 		return "Arcane";
 	}
@@ -140,19 +150,19 @@ string CCharEntity::GetDefenceInfo()
 void CCharEntity::RandomAttack( SMessage msg )
 {
 	// Choosing Attack
-	m_CurrentAttack = Random(0, m_CharTemplate->GetAttackNum() - 1);
-	if ( m_CharTemplate->GetAttack(m_CurrentAttack).type == Magical )
+	m_CurrentAttack = Random(0, m_CharTemplate->GetAttackNum()-1);
+	if ( m_CharTemplate->GetAttack(m_CurrentAttack).GetType() == Magical )
 	{
-		if ( m_CurrentMagic - m_CharTemplate->GetAttack(m_CurrentAttack).cost >= 0 )
+		if ( m_CurrentMagic - m_CharTemplate->GetAttack(m_CurrentAttack).GetCost() >= 0 )
 		{
-			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).cost;
+			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 		}
 		else
 		{
 			do
 			{
 				m_CurrentAttack = Random(0, m_CharTemplate->GetAttackNum() - 1);
-			} while ( m_CurrentMagic - m_CharTemplate->GetAttack(m_CurrentAttack).cost < 0 );
+			} while ( m_CurrentMagic - m_CharTemplate->GetAttack(m_CurrentAttack).GetCost() < 0 );
 		}
 	}
 
@@ -168,14 +178,14 @@ void CCharEntity::RandomAttack( SMessage msg )
 	}
 
 	msg.type = Msg_Attacked;
-	msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
+	msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 	if(msg.attack.type == Physical)
 	{
-		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
+		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
 	}
 	else
 	{
-		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
+		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
 	}
 	msg.from = GetUID();
 	if(effectOn)
@@ -195,7 +205,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 	}
 	m_State = Wait;
 }
-void CCharEntity::ReacativeAttack( SMessage msg )
+void CCharEntity::WeaknessAttack( SMessage msg )
 {
 	if ( m_CurrentHealth < m_CharTemplate->GetMaxHealth() / 4 )
 	{
@@ -206,59 +216,129 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 			do
 			{
 				chance = Random( 0, m_CharTemplate->GetDefenceNum()-1);
-				cost = m_CharTemplate->GetDefence(chance).cost;
+				cost = m_CharTemplate->GetDefence(chance).GetCost();
 			} while ( m_CurrentMagic - cost < 0 );
 			m_CurrentDefence = chance;
 			m_Defend = true;
 			m_CurrentMagic -= cost;
 		}
 	}
+	bool useItem;
+	if ( m_Defend )
+	{
+		useItem = false;
+	}
+	else
+	{
+		useItem = UseItem(msg);
+	}
 
-	if(!m_Defend && !UseItem(msg))
+	if(!m_Defend && !useItem)
 	{
 		TEntityUID target;
 
 		if(Template()->GetType() == "enemy")
 		{
-			target = LowestHealthAlly();
-		}
-		else
-		{
-			target = LowestHealthEnemy();
-		}
-
-		int targetHealth = EntityManager.GetCharEntity(target)->GetCurrentHealth();
-		bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
-		int weaknessAttack = 0;
-
-		for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-		{
-			if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).element)
+			bool weakness = false;
+			for(auto it = Allies.begin(); it != Allies.end(); it++)
 			{
-				weaknessAttack = i;
-				foeWeakness = true;
+				EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
+				bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
+				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+				{
+					if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
+					{
+						weakness = true;
+						target = *it;
+					}
+				}
+			}
+			if(!weakness )
+			{
+				target = LowestHealthAlly();
 			}
 		}
-
-		if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).cost > 0)
+		else
 		{
-			m_CurrentAttack = weaknessAttack;
+			bool weakness = false;
+			for(auto it = Enemies.begin(); it != Enemies.end(); it++)
+			{
+				EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
+				bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
+				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+				{
+					if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
+					{
+						weakness = true;
+						target = *it;
+					}
+				}
+			}
+			if(!weakness)
+			{
+				target = LowestHealthEnemy();
+			}
+		}
+		int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
+		bool targetWeakness = false;
+		int weaknessAttack = 0;
+		for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+		{
+			if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+			{
+				weaknessAttack = i;
+				targetWeakness = true;
+			}
+		}
+		int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
+
+		if(bestAttack != weaknessAttack)
+		{
+			CAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
+			CAttack bestA = m_CharTemplate->GetAttack(bestAttack);
+
+			float weaknessDamage = weaknessA.GetDamage() * 2;
+			float bestDamage = bestA.GetDamage();
+			if(weaknessA.GetType() == Physical)
+			{
+				weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+			}
+			else
+			{
+				weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+			}
+			if(bestA.GetType() == Physical)
+			{
+				bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+			}
+			else
+			{
+				bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+			}
+			if((weaknessDamage > bestDamage) && targetWeakness)
+			{
+				m_CurrentAttack = weaknessAttack;
+			}
+			else
+			{
+				m_CurrentAttack = bestAttack;
+			}
 		}
 		else
 		{
-			m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
+			m_CurrentAttack = bestAttack;
 		}
-		m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).cost;
+		m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 
 		msg.type = Msg_Attacked;
-		msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
+		msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 		if(msg.attack.type == Physical)
 		{
-			msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
+			msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
 		}
 		else
 		{
-			msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
+			msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
 		}
 		msg.from = GetUID();
 		if(effectOn)
@@ -288,8 +368,9 @@ void CCharEntity::ReacativeAttack( SMessage msg )
 	}
 	m_State = Wait;
 }
-void CCharEntity::Planning( SMessage msg )
+void CCharEntity::StrongestAttack( SMessage msg )
 {
+	//Check to see
 	if(!UseItem(msg))
 	{
 		std::string type = m_CharTemplate->GetType();
@@ -305,12 +386,12 @@ void CCharEntity::Planning( SMessage msg )
 				{
 					for(auto it = Allies.begin(); it != Allies.end(); it++)
 					{
-						averageStrength += EntityManager.GetCharEntity(*it)->m_CharTemplate->GetStrength();
+						averageStrength += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetStrength();
 					}
 					averageStrength /= Allies.size();
 					for(auto it = Allies.begin(); it != Allies.end(); it++)
 					{
-						averageIntelligence += EntityManager.GetCharEntity(*it)->m_CharTemplate->GetIntelligence();
+						averageIntelligence += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetIntelligence();
 					}
 					averageIntelligence /= Allies.size();
 				}
@@ -318,12 +399,12 @@ void CCharEntity::Planning( SMessage msg )
 				{
 					for(auto it = Enemies.begin(); it != Enemies.end(); it++)
 					{
-						averageStrength += EntityManager.GetCharEntity(*it)->m_CharTemplate->GetStrength();
+						averageStrength += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetStrength();
 					}
 					averageStrength /= Enemies.size();
 					for(auto it = Enemies.begin(); it != Enemies.end(); it++)
 					{
-						averageIntelligence += EntityManager.GetCharEntity(*it)->m_CharTemplate->GetIntelligence();
+						averageIntelligence += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetIntelligence();
 					}
 					averageIntelligence /= Enemies.size();
 				}
@@ -332,18 +413,18 @@ void CCharEntity::Planning( SMessage msg )
 					do
 					{
 						m_CurrentDefence = Random(0,m_CharTemplate->GetDefenceNum()-1);
-					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Physical 
-						    && m_CharTemplate->GetDefence(m_CurrentDefence).type != Both);
+					} while (m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).GetCost() < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Physical
+						&& m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Both);
 				}
 				else
 				{
 					do
 					{
 						m_CurrentDefence = Random(0,m_CharTemplate->GetDefenceNum()-1);
-					} while(m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).cost < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).type != Magical 
-						    && m_CharTemplate->GetDefence(m_CurrentDefence).type != Both);
+					} while (m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).GetCost() < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Magical
+						&& m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Both);
 				}
-				m_CurrentMagic -= m_CharTemplate->GetDefence(m_CurrentDefence).cost;
+				m_CurrentMagic -= m_CharTemplate->GetDefence(m_CurrentDefence).GetCost();
 
 				m_Defend = true;
 				m_DefendLast = true;
@@ -359,111 +440,45 @@ void CCharEntity::Planning( SMessage msg )
 
 			if(type == "enemy")
 			{
-				bool weakness = false;
-				for(auto it = Allies.begin(); it != Allies.end(); it++)
-				{
-					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness().element;
-					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
-					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-					{
-						if(targetWeakness == m_CharTemplate->GetAttack(i).element && !targetDead)
-						{
-							weakness = true;
-							target = *it;
-						}
-					}
-				}
-				if(!weakness )
-				{
-					target = LowestHealthAlly();
-				}
+				target = LowestHealthAlly();
 			}
 			else
 			{
-				bool weakness = false;
-				for(auto it = Enemies.begin(); it != Enemies.end(); it++)
-				{
-					EAttackElement targetWeakness = EntityManager.GetCharEntity(*it)->m_CharTemplate->GetWeakness().element;
-					bool targetDead = EntityManager.GetCharEntity(*it)->isDead();
-					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-					{
-						if(targetWeakness == m_CharTemplate->GetAttack(i).element && !targetDead)
-						{
-							weakness = true;
-							target = *it;
-						}
-					}
-				}
-				if(!weakness)
-				{
-					target = LowestHealthEnemy();
-				}
+				target = LowestHealthEnemy();
 			}
 
-			int targetHealth = EntityManager.GetCharEntity(target)->GetCurrentHealth();
-			bool targetWeakness = false;
+			int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
+			bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
 			int weaknessAttack = 0;
 
 			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 			{
-				if(EntityManager.GetCharEntity(target)->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).element)
+				if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
 				{
 					weaknessAttack = i;
-					targetWeakness = true;
+					foeWeakness = true;
 				}
 			}
-			int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
 
-			if(bestAttack != weaknessAttack)
+			if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).GetCost() > 0)
 			{
-				SAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
-				SAttack bestA = m_CharTemplate->GetAttack(bestAttack);
-
-				float weaknessDamage = weaknessA.damage * 2;
-				float bestDamage = bestA.damage;
-
-				if(weaknessA.type == Physical)
-				{
-					weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
-				}
-				else
-				{
-					weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
-				}
-
-				if(bestA.type == Physical)
-				{
-					bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
-				}
-				else
-				{
-					bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
-				}
-
-				if((weaknessDamage > bestDamage) && targetWeakness)
-				{
-					m_CurrentAttack = weaknessAttack;
-				}
-				else
-				{
-					m_CurrentAttack = bestAttack;
-				}
+				m_CurrentAttack = weaknessAttack;
 			}
 			else
 			{
-				m_CurrentAttack = bestAttack;
+				m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
 			}
-			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).cost;
+			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 
 			msg.type = Msg_Attacked;
-			msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack);
+			msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 			if(msg.attack.type == Physical)
 			{
-				msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
+				msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
 			}
 			else
 			{
-				msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).damage * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
+				msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
 			}
 			msg.from = GetUID();
 
@@ -496,32 +511,32 @@ void CCharEntity::TakingDamage( SMessage msg )
 	float defence = 1.0f;  //A modifier for the damage taken by the character.
 	if ( m_Defend && msg.attack.type != Recoil )
 	{
-		SDefence pick = m_CharTemplate->GetDefence(m_CurrentDefence);
-		if ( pick.type == Regular )
+		CDefence pick = m_CharTemplate->GetDefence(m_CurrentDefence);
+		if (pick.GetType() == Regular)
 		{
-			if ( pick.attackRecivedType == msg.attack.type || pick.attackRecivedType == Both )
+			if (pick.GetAttackRecivedType() == msg.attack.type || pick.GetAttackRecivedType() == Both)
 			{
-				if ( pick.element == None || pick.element == msg.attack.element )
+				if ( pick.GetElement() == None || pick.GetElement() == msg.attack.element )
 				{
-						defence = pick.modifier;
+						defence = pick.GetModifier();
 				}
 			}
 		}
-		else if ( pick.type == Reflect )
+		else if (pick.GetType() == Reflect)
 		{
 				defence = 0.0f;
 				TEntityUID from = msg.from;
 				msg.type = Msg_Attacked;
-				msg.attack.damage *= pick.modifier;
+				msg.attack.damage *= pick.GetModifier();
 				msg.from = GetUID();
 				Messenger.SendMessage( from, msg );
 		}
-		else if ( pick.type == PainSplit )
+		else if (pick.GetType() == PainSplit)
 		{
-				defence = pick.modifier;
+				defence = pick.GetModifier();
 				TEntityUID from = msg.from;
 				msg.type = Msg_Attacked;
-				msg.attack.damage *= pick.modifier;
+				msg.attack.damage *= pick.GetModifier();
 				msg.from = GetUID();
 				Messenger.SendMessage( from, msg );
 		}
@@ -647,22 +662,26 @@ bool CCharEntity::Update( TFloat32 updateTime )
 			}
 			if ( AIUsed == 2 )
 			{
-				ReacativeAttack( msg );
+				WeaknessAttack( msg );
 			}
 			if ( AIUsed == 3 )
 			{
-				Planning( msg );
+				StrongestAttack( msg );
 			}
-		}
-		if(m_Poison == IsPoisoned)
-		{
-			m_PoisonCount--;
-			m_CurrentHealth = static_cast<TInt32>(m_CurrentHealth * 0.9f);
-			if(m_PoisonCount < 1)
+
+			numTurns++;
+
+			if(m_Poison == IsPoisoned)
 			{
-				m_Poison = None;
+				m_PoisonCount--;
+				m_CurrentHealth = static_cast<TInt32>(m_CurrentHealth * 0.9f);
+				if(m_PoisonCount < 1)
+				{
+					m_Poison = None;
+				}
 			}
 		}
+
 	}
 
 	if(m_State == Dead)
@@ -695,13 +714,13 @@ bool CCharEntity::Update( TFloat32 updateTime )
 	return true;
 }
 
-void CCharEntity::AddItemToInvantory( SItem newItem )
+void CCharEntity::AddItemToInvantory( CItem newItem )
 {
 	bool haveOne = false;
 	int haveOnePos = 0;
 	for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 	{
-		if ( m_Inventory[i].item.name == newItem.name )
+		if ( m_Inventory[i].item.GetName() == newItem.GetName() )
 		{
 			haveOne = true;
 		}
@@ -727,26 +746,26 @@ bool CCharEntity::UseItem( SMessage msg )
 	{
 		for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 		{
-			if ( m_Inventory[i].item.effect == restoreHealth )
+			if ( m_Inventory[i].item.GetEffect() == restoreHealth )
 			{
 				TEntityUID current;
 				CCharEntity* hurt;
 				if ( m_CharTemplate->GetType() == "Ally" )
 				{
 					current = LowestHealthAlly();
-					hurt = EntityManager.GetCharEntity( current );
+					hurt = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 				else
 				{
 					current = LowestHealthEnemy();
-					hurt = EntityManager.GetCharEntity( current );
+					hurt = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 
 				if ( hurt->GetCurrentHealth() < (hurt->m_CharTemplate->GetMaxHealth() / 10) )
 				{
 					msg.type = Msg_HealthRestored;
 					msg.from = GetUID();
-					msg.item = m_Inventory[i].item;
+					msg.item = m_Inventory[i].item.Use(GetUID());
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),current,msg);
@@ -760,26 +779,26 @@ bool CCharEntity::UseItem( SMessage msg )
 				}
 
 			}
-			else if ( m_Inventory[i].item.effect == restoreMana )
+			else if ( m_Inventory[i].item.GetEffect() == restoreMana )
 			{
 				TEntityUID current;
 				CCharEntity* lowMagic;
 				if ( m_CharTemplate->GetType() == "Ally" )
 				{
 					current = LowestMagicAlly();
-					lowMagic = EntityManager.GetCharEntity( current );
+					lowMagic = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 				else
 				{
 					current = LowestMagicEnemy();
-					lowMagic = EntityManager.GetCharEntity( current );
+					lowMagic = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 
 				if ( lowMagic->GetCurrentMagic() < (lowMagic->m_CharTemplate->GetMaxMagic() * 0.1) )
 				{
 					msg.type = Msg_MagicRestored;
 					msg.from = GetUID();
-					msg.item = m_Inventory[i].item;
+					msg.item = m_Inventory[i].item.Use(GetUID());
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),current,msg);
@@ -792,7 +811,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					return true;
 				}
 			}
-			else if ( m_Inventory[i].item.effect == revive )
+			else if ( m_Inventory[i].item.GetEffect() == revive )
 			{
 				TEntityUID target;
 				if ( m_CharTemplate->GetType() == "Enemy" )
@@ -808,7 +827,7 @@ bool CCharEntity::UseItem( SMessage msg )
 				{
 					msg.type = Msg_Revive;
 					msg.from = GetUID();
-					msg.item = m_Inventory[i].item;
+					msg.item = m_Inventory[i].item.Use(GetUID());
 					if(effectOn)
 					{
 						itemEffect.StartEffect(Position(),target,msg);
@@ -821,7 +840,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					return true;
 				}
 			}
-			else if ( m_Inventory[i].item.effect == poison )
+			else if ( m_Inventory[i].item.GetEffect() == poison )
 			{
 				if ( m_Poison != PoisonedWeapon )
 				{

@@ -50,4 +50,21 @@ SAttack CAttack::Attack(TEntityUID attacker)
 	return attack;
 }
 
+bool CAttack::WeaknesHasEffect( EAttackElement attackElement )
+{
+	for( auto it = m_AddWeakness.begin(); it != m_AddWeakness.end(); it++ )
+	{
+		if( (*it).element == attackElement )
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int CAttack::RecoilCalculation( int health )
+{
+	return (health - static_cast<int>(m_Damage * m_Recoil));
+}
+
 }

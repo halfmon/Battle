@@ -25,19 +25,19 @@ struct SDefence
 	int            cost;
 };
 
-const SDefence BASIC_PHYSICAL = { Regular, Physical, None, 0.75f, 0 };
-const SDefence BASIC_MAGICAL  = { Regular, Magical, None, 0.75f, 0 };
-
-const SDefence ADVANCED_PHYSICAL = { Regular, Physical, None, 0.5f, 20 };
-const SDefence ADVANCED_MAGICAL =  { Regular, Magical, None, 0.5f, 20 };
-
-const SDefence LIGHTNING_DEFENCE = { Regular, Magical, Lightning, 0.25f, 30 };
-const SDefence FIRE_DEFENCE =      { Regular, Magical, Fire, 0.25f, 30 };
-const SDefence ICE_DEFENCE =       { Regular, Magical, Ice, 0.25f, 30 };
-const SDefence ARCANE_DEFENCE =    { Regular, Magical, Arcane, 0.25f, 30 };
-
-const SDefence REFLECT = { Reflect, Both, None, 0.5f, 70 };
-const SDefence PAIN_SPLIT = { PainSplit, Both, None, 0.5f, 35 };
+//const SDefence BASIC_PHYSICAL = { Regular, Physical, None, 0.75f, 0 };
+//const SDefence BASIC_MAGICAL  = { Regular, Magical, None, 0.75f, 0 };
+//
+//const SDefence ADVANCED_PHYSICAL = { Regular, Physical, None, 0.5f, 20 };
+//const SDefence ADVANCED_MAGICAL =  { Regular, Magical, None, 0.5f, 20 };
+//
+//const SDefence LIGHTNING_DEFENCE = { Regular, Magical, Lightning, 0.25f, 30 };
+//const SDefence FIRE_DEFENCE =      { Regular, Magical, Fire, 0.25f, 30 };
+//const SDefence ICE_DEFENCE =       { Regular, Magical, Ice, 0.25f, 30 };
+//const SDefence ARCANE_DEFENCE =    { Regular, Magical, Arcane, 0.25f, 30 };
+//
+//const SDefence REFLECT = { Reflect, Both, None, 0.5f, 70 };
+//const SDefence PAIN_SPLIT = { PainSplit, Both, None, 0.5f, 35 };
 
 class CDefence
 {
@@ -53,5 +53,30 @@ public:
 	CDefence(std::string m_Name,EDefenceType type,EAttackType attackRecivedType,EAttackElement element,TFloat32 modifier,TInt32 cost);
 
 	SDefence Defend(TEntityUID Defender);
+
+	std::string GetName()
+	{
+		return m_Name;
+	}
+	EDefenceType GetType()
+	{
+		return m_Type;
+	}
+	EAttackType GetAttackRecivedType()
+	{
+		return m_AttackRecived;
+	}
+	EAttackElement GetElement()
+	{
+		return m_Element;
+	}
+	TFloat32 GetModifier()
+	{
+		return m_Modifier;
+	}
+	int GetCost()
+	{
+		return m_Cost;
+	}
 };
 }// namespace gen

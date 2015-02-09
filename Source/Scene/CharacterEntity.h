@@ -22,8 +22,6 @@ using namespace std;
 
 namespace gen
 {
-const TInt32 NumAttacks = 4;
-const TInt32 NumDefences = 4;
 const TInt32 NumInvantory = 5;
 
 /*-----------------------------------------------------------------------------------------
@@ -39,7 +37,7 @@ public:
 		(
 		const string& type,const string& name,const string& meshFilename,
 		TInt32 maxHealth,TInt32 maxMagic,TInt32 st,TInt32 in,TInt32 sp,
-		vector<SAttack> attacks,vector<SDefence> defences,EAttackElement weak,TInt32 AI
+		vector<CAttack> attacks,vector<CDefence> defences,EAttackElement weak,TInt32 AI
 		): CEntityTemplate(type,name,meshFilename)
 	{
 		m_MaxHealth = maxHealth;
@@ -50,11 +48,11 @@ public:
 		m_BaseWeakness.element = weak;
 		m_AI = AI;
 
-		for(int i = 0; i < NumAttacks; i++)
+		for(int i = 0; i < static_cast<int>(attacks.size()); i++)
 		{
 			m_Attacks.push_back(attacks[i]);
 		}
-		for(int i = 0; i < NumDefences; i++)
+		for (int i = 0; i < static_cast<int>(defences.size()); i++)
 		{
 			m_Defences.push_back(defences[i]);
 		}
@@ -74,8 +72,8 @@ private:
 	};
 
 	SStats  m_Stats;
-	vector<SAttack> m_Attacks;
-	vector<SDefence> m_Defences;
+	vector<CAttack> m_Attacks;
+	vector<CDefence> m_Defences;
 	SWeakness m_BaseWeakness;
 	TInt32 m_AI;
 
@@ -109,11 +107,11 @@ public:
 		return m_Stats.speed;
 	}
 
-	SAttack GetAttack(int i)
+	CAttack GetAttack(int i)
 	{
 		return m_Attacks[i];
 	}
-	SDefence GetDefence(int i)
+	CDefence GetDefence(int i)
 	{
 		return m_Defences[i];
 	}
@@ -168,7 +166,7 @@ private:
 
 	struct SInventoryItem
 	{
-		SItem item;
+		CItem item;
 		TInt32 Quantity;
 	};
 	/////////////////////////////////////
@@ -196,11 +194,11 @@ private:
 public:
 	virtual bool Update(TFloat32 updateTime);
 	virtual void RandomAttack( SMessage );
-	virtual void ReacativeAttack( SMessage );
-	virtual void Planning( SMessage );
+	virtual void WeaknessAttack( SMessage );
+	virtual void StrongestAttack( SMessage );
 	virtual void TakingDamage( SMessage );
 
-	virtual void AddItemToInvantory( SItem );
+	virtual void AddItemToInvantory( CItem );
 	virtual bool UseItem( SMessage );
 
 	TInt32 GetCurrentHealth()

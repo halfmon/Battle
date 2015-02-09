@@ -32,6 +32,8 @@ namespace gen
 	extern vector<TEntityUID> Allies;
 	extern vector<TEntityUID> Enemies;
 
+	extern int numTurns;
+
 	extern int generalAI;
 	extern bool effectOn;
 	extern bool templateAIOn;

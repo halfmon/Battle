@@ -18,10 +18,10 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -49,8 +49,8 @@
     <LibraryPath>Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>Source\UI;Source\tinyxml;Source\Render;Source\Math;Source\Common;Source\Scene;Source\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>Source\FMod;Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>Source\UI;Source\FMod\inc;Source\tinyxml;Source\Render;Source\Math;Source\Common;Source\Scene;Source\AntTweakBar\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +102,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9.lib;d3d9.lib;winmm.lib;AntTweakBar64.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9.lib;d3d9.lib;winmm.lib;AntTweakBar64.lib;fmodex64_vc.lib;fmod_event64.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

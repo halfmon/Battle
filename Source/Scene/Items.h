@@ -44,5 +44,15 @@ public:
 	CItem(std::string name,EItemEffect effect,TInt32 value);
 
 	SItem Use(TEntityUID user);
+
+	EItemEffect GetEffect()
+	{
+		return m_Effect;
+	}
+
+	std::string GetName()
+	{
+		return m_Name;
+	}
 };
 }

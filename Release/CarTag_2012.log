@@ -1,18 +1,11 @@
-﻿Build started 26/01/2015 12:41:57.
-     1>Project "C:\Users\DLRiley\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Build target(s)).
+﻿Build started 09/02/2015 01:23:50.
+     1>Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Build target(s)).
+       Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Battle.cpp Source\Scene\AttackEffect.cpp Source\Scene\Attacks.cpp Source\Scene\CharacterEntity.cpp Source\Scene\Defence.cpp Source\Scene\EntityManager.cpp Source\Scene\ItemEffect.cpp Source\Scene\Items.cpp
-         Battle.cpp
-         AttackEffect.cpp
-         Attacks.cpp
-         CharacterEntity.cpp
-         Defence.cpp
-         EntityManager.cpp
-         ItemEffect.cpp
-         Items.cpp
-         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /D _USING_V110_SDK71_ /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\MainApp.cpp
+         MainApp.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\DLRiley\Desktop\Battle\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib fmodex64_vc.lib fmod_event64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.pdb" /SUBSYSTEM:WINDOWS,"5.01" /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
          Release\Attacks.obj
          Release\Camera.obj
          Release\CharacterEntity.obj
@@ -49,9 +42,13 @@
          Release\MathIO.obj
          Release\Battle.obj
          Release\MainApp.obj
-         CarTag_2012.vcxproj -> C:\Users\DLRiley\Desktop\Battle\Release\Battle.exe
-     1>Done Building Project "C:\Users\DLRiley\Desktop\Battle\CarTag_2012.vcxproj" (Build target(s)).
+     1>MainApp.obj : error LNK2019: unresolved external symbol _FMOD_System_Create@4 referenced in function "bool __cdecl gen::FMODSetup(void)" (?FMODSetup@gen@@YA_NXZ)
+     1>MainApp.obj : error LNK2019: unresolved external symbol _FMOD_System_Init@16 referenced in function "bool __cdecl gen::FMODSetup(void)" (?FMODSetup@gen@@YA_NXZ)
+     1>MainApp.obj : error LNK2019: unresolved external symbol _FMOD_System_CreateSound@20 referenced in function "bool __cdecl gen::FMODSetup(void)" (?FMODSetup@gen@@YA_NXZ)
+     1>MainApp.obj : error LNK2019: unresolved external symbol _FMOD_System_PlaySound@20 referenced in function "bool __cdecl gen::FMODSetup(void)" (?FMODSetup@gen@@YA_NXZ)
+     1>C:\Users\halfm_000\Desktop\Battle\Release\Battle.exe : fatal error LNK1120: 4 unresolved externals
+     1>Done Building Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:08.15
+Time Elapsed 00:00:02.36
