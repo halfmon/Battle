@@ -49,8 +49,8 @@
     <LibraryPath>Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>Source\FMod;Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>Source\UI;Source\FMod\inc;Source\tinyxml;Source\Render;Source\Math;Source\Common;Source\Scene;Source\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>Source\FMod\api\lib;Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>Source\UI;Source\FMod\api\inc;Source\tinyxml;Source\Render;Source\Math;Source\Common;Source\Scene;Source\AntTweakBar\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,7 +88,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>Source\AntTweakBar;Source\Common;Source\Math;Source\UI;Source\Scene;Source\Render;Source\Data;Source\tinyxml</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source\AntTweakBar;Source\Common;Source\Math;Source\UI;Source\Scene;Source\Render;Source\Data;Source\tinyxml;Source\FMod</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -102,7 +102,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9.lib;d3d9.lib;winmm.lib;AntTweakBar64.lib;fmodex64_vc.lib;fmod_event64.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9.lib;d3d9.lib;winmm.lib;AntTweakBar64.lib;fmodex64_vc.lib;fmodex_vc.lib;fmod_event64.lib;fmod_event.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -158,6 +158,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AntTweakBar.h" />
+    <ClInclude Include="Source\FMod\api\inc\fmod.h" />
+    <ClInclude Include="Source\FMod\api\inc\fmod_errors.h" />
+    <ClInclude Include="Source\FMod\api\inc\fmod_event.h" />
     <ClInclude Include="Source\Scene\AttackEffect.h" />
     <ClInclude Include="Source\Scene\Attacks.h" />
     <ClInclude Include="Source\Scene\Camera.h" />

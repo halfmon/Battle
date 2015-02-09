@@ -71,7 +71,7 @@ bool FMODSetup()
 		return false;
 	}
 
-	result = FMOD_System_CreateSound(system, "Mouse Trap.mp3", FMOD_DEFAULT, 0, &backgroundMusic );
+	result = FMOD_System_CreateSound(system, "C:/Users/halfm_000/Desktop/Battle/Media/Mouse Trap.mp3", FMOD_DEFAULT, 0, &backgroundMusic );
 	if (result != FMOD_OK)
 	{
 		return false;

@@ -249,6 +249,9 @@
     <ClInclude Include="Source\Scene\ItemEffect.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\FMod\api\inc\fmod.h" />
+    <ClInclude Include="Source\FMod\api\inc\fmod_errors.h" />
+    <ClInclude Include="Source\FMod\api\inc\fmod_event.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Render\PS_DiffuseColour.psh">
