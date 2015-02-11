@@ -1,0 +1,125 @@
+﻿Build started 11/02/2015 15:39:22.
+     1>Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Build target(s)).
+       Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ISource\AntTweakBar\lib /ISource\AntTweakBar\include /ISource\tinyxml /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\FMod /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /Gm /EHsc /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Scene\AttackEffect.cpp Source\Scene\Attacks.cpp Source\Scene\Camera.cpp Source\Scene\CharacterEntity.cpp Source\Scene\Defence.cpp Source\Scene\Entity.cpp Source\Scene\EntityManager.cpp Source\Scene\ItemEffect.cpp Source\Scene\Items.cpp Source\Scene\Light.cpp Source\Scene\Messenger.cpp Source\Common\CFatalException.cpp Source\Common\CHashTable.cpp Source\Common\CTimer.cpp Source\Common\MSDefines.cpp Source\Common\Utility.cpp Source\Render\Mesh.cpp Source\Render\RenderMethod.cpp Source\Render\CImportXFile.cpp Source\tinyxml\tinystr.cpp Source\tinyxml\tinyxml.cpp Source\tinyxml\tinyxmlerror.cpp Source\tinyxml\tinyxmlparser.cpp Source\tinyxml\xmltest.cpp Source\UI\Input.cpp Source\Math\BaseMath.cpp Source\Math\CMatrix2x2.cpp Source\Math\CMatrix3x3.cpp Source\Math\CMatrix4x4.cpp Source\Math\CQuaternion.cpp Source\Math\CQuatTransform.cpp Source\Math\CVector2.cpp Source\Math\CVector3.cpp Source\Math\CVector4.cpp Source\Math\MathIO.cpp Source\Battle.cpp Source\MainApp.cpp
+         MainApp.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Battle.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         MathIO.cpp
+         CVector4.cpp
+         CVector3.cpp
+         CVector2.cpp
+         CQuatTransform.cpp
+         CQuaternion.cpp
+         CMatrix4x4.cpp
+         CMatrix3x3.cpp
+         CMatrix2x2.cpp
+         BaseMath.cpp
+         Input.cpp
+         xmltest.cpp
+         tinyxmlparser.cpp
+         tinyxmlerror.cpp
+         tinyxml.cpp
+         tinystr.cpp
+         CImportXFile.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         RenderMethod.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Generating Code...
+         Compiling...
+         Mesh.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Utility.cpp
+         MSDefines.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\atlmfc\include\atlcore.h(638): error C2039: 'SetDefaultDllDirectories' : is not a member of '`global namespace''
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\atlmfc\include\atlcore.h(638): error C2065: 'SetDefaultDllDirectories' : undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\atlmfc\include\atlcore.h(640): error C2065: 'LOAD_LIBRARY_SEARCH_SYSTEM32' : undeclared identifier
+         CTimer.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         CHashTable.cpp
+         CFatalException.cpp
+         Messenger.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Light.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Items.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         ItemEffect.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         EntityManager.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Entity.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Defence.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         CharacterEntity.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Camera.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Attacks.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         AttackEffect.cpp
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\sal_supp.h(57): warning C4005: '__useHeader' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2872) : see previous definition of '__useHeader'
+     1>c:\program files (x86)\microsoft sdks\windows\v7.1a\include\specstrings_supp.h(77): warning C4005: '__on_failure' : macro redefinition
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\sal.h(2882) : see previous definition of '__on_failure'
+         Generating Code...
+     1>Done Building Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:25.25

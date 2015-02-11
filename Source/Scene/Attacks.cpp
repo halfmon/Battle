@@ -29,7 +29,7 @@ SAttack CAttack::Attack(TEntityUID attacker)
 			EntityManager.GetCharEntity(attacker)->AddWeakness(*it);
 		}
 	}
-	if(m_Recoil > 0)
+	if(m_Recoil > 0.0f)
 	{
 		SMessage msg;
 		SAttack recoil;
@@ -38,6 +38,7 @@ SAttack CAttack::Attack(TEntityUID attacker)
 		recoil.element = Recoil;
 		recoil.type = Both;
 		msg.type = Msg_Attacked;
+		msg.attack = recoil;
 		Messenger.SendMessage(attacker,msg);
 	}
 
@@ -50,16 +51,24 @@ SAttack CAttack::Attack(TEntityUID attacker)
 	return attack;
 }
 
-bool CAttack::WeaknesHasEffect( EAttackElement attackElement )
+int CAttack::WeaknesHasEffect( vector<EAttackElement> attackElements )
 {
+	int attacks = 0;
 	for( auto it = m_AddWeakness.begin(); it != m_AddWeakness.end(); it++ )
 	{
-		if( (*it).element == attackElement )
+		if( (*it).element = None )
 		{
-			return true;
+			return 0;
+		}
+		for( auto attackit = attackElements.begin(); attackit != attackElements.end(); it++ )
+		{
+			if( (*it).element == (*attackit) )
+			{
+				attacks++;
+			}
 		}
 	}
-	return false;
+	return attacks;
 }
 
 int CAttack::RecoilCalculation( int health )

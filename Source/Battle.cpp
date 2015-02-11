@@ -526,7 +526,7 @@ void AttackSetup()
 		TFloat32 damage,recoil;
 		pElem->QueryIntAttribute("Cost",&cost);
 		pElem->QueryFloatAttribute("Damage",&damage);
-		pElem->QueryFloatAttribute("recoil",&recoil);
+		pElem->QueryFloatAttribute("Recoil",&recoil);
 
 		SWeakness weakness;
 		TiXmlHandle hWeakness(0);
@@ -1163,7 +1163,8 @@ void RenderSceneText( float updateTime )
 
 		CVector3 TargetPos = attackEffect.getTargetPos();
 
-		outText << "Attack Effect State: " << attackEffect.getState();
+		outText << "Attack Effect State: " << attackEffect.getState() << std::endl
+			    << "Item Effect State: " << itemEffect.getState();
 		RenderText(outText.str(),ViewportWidth/2,0,1.0f,1.0f,1.0f,true,End);
 		outText.str("");
 	}

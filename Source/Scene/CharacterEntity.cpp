@@ -4,6 +4,8 @@
 	Character entity template and entity classes
 *************************************************/
 
+#include <vector>
+
 #include "CharacterEntity.h"
 #include "EntityManager.h"
 #include "Messenger.h"
@@ -64,6 +66,34 @@ TInt32 PickBestAttack( CCharTemplate* attackList, TInt32 targetHealth, TInt32 at
 		}
 	}
 	return attackNum;
+}
+
+vector<EAttackElement> getattacklist( std::string name )
+{
+	vector<EAttackElement> List;
+	if( name == "enemy" )
+	{
+		for( auto listIt = Allies.begin(); listIt != Allies.end(); listIt++ )
+		{
+			CCharEntity* current = static_cast<CCharEntity*>(EntityManager.GetEntity( *listIt ));
+			for( int i = 0; i < current->GetTemplate()->GetAttackNum(); i++ )
+			{
+				List.push_back( current->GetTemplate()->GetAttack( i ).GetElement() );
+			}
+		}
+	}
+	else
+	{
+		for( auto listIt = Enemies.begin(); listIt != Enemies.end(); listIt++ )
+		{
+			CCharEntity* current = static_cast<CCharEntity*>(EntityManager.GetEntity( *listIt ));
+			for( int i = 0; i < current->GetTemplate()->GetAttackNum(); i++ )
+			{
+				List.push_back( current->GetTemplate()->GetAttack( i ).GetElement() );
+			}
+		}
+	}
+	return List;
 }
 /*-----------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------
@@ -236,98 +266,109 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 	if(!m_Defend && !useItem)
 	{
 		TEntityUID target;
+		int attackTries = 5;
+		int numAddedWeaknessAttacks = 0;
+		int recoilAfterMath = 100;
 
-		if(Template()->GetType() == "enemy")
+		do
 		{
-			bool weakness = false;
-			for(auto it = Allies.begin(); it != Allies.end(); it++)
+			if(Template()->GetType() == "enemy")
 			{
-				EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
-				bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
-				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+				bool weakness = false;
+				for(auto it = Allies.begin(); it != Allies.end(); it++)
 				{
-					if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
+					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
+					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
+					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 					{
-						weakness = true;
-						target = *it;
+						if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
+						{
+							weakness = true;
+							target = *it;
+						}
 					}
 				}
-			}
-			if(!weakness )
-			{
-				target = LowestHealthAlly();
-			}
-		}
-		else
-		{
-			bool weakness = false;
-			for(auto it = Enemies.begin(); it != Enemies.end(); it++)
-			{
-				EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
-				bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
-				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+				if(!weakness )
 				{
-					if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
-					{
-						weakness = true;
-						target = *it;
-					}
+					target = LowestHealthAlly();
 				}
-			}
-			if(!weakness)
-			{
-				target = LowestHealthEnemy();
-			}
-		}
-		int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
-		bool targetWeakness = false;
-		int weaknessAttack = 0;
-		for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-		{
-			if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
-			{
-				weaknessAttack = i;
-				targetWeakness = true;
-			}
-		}
-		int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
-
-		if(bestAttack != weaknessAttack)
-		{
-			CAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
-			CAttack bestA = m_CharTemplate->GetAttack(bestAttack);
-
-			float weaknessDamage = weaknessA.GetDamage() * 2;
-			float bestDamage = bestA.GetDamage();
-			if(weaknessA.GetType() == Physical)
-			{
-				weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
 			}
 			else
 			{
-				weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+				bool weakness = false;
+				for(auto it = Enemies.begin(); it != Enemies.end(); it++)
+				{
+					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
+					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
+					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+					{
+						if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
+						{
+							weakness = true;
+							target = *it;
+						}
+					}
+				}
+				if(!weakness)
+				{
+					target = LowestHealthEnemy();
+				}
 			}
-			if(bestA.GetType() == Physical)
+			int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
+			bool targetWeakness = false;
+			int weaknessAttack = 0;
+			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 			{
-				bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+				if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+				{
+					weaknessAttack = i;
+					targetWeakness = true;
+				}
 			}
-			else
+			int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
+
+			if(bestAttack != weaknessAttack)
 			{
-				bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
-			}
-			if((weaknessDamage > bestDamage) && targetWeakness)
-			{
-				m_CurrentAttack = weaknessAttack;
+				CAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
+				CAttack bestA = m_CharTemplate->GetAttack(bestAttack);
+
+				float weaknessDamage = weaknessA.GetDamage() * 2;
+				float bestDamage = bestA.GetDamage();
+				if(weaknessA.GetType() == Physical)
+				{
+					weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+				}
+				else
+				{
+					weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+				}
+				if(bestA.GetType() == Physical)
+				{
+					bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+				}
+				else
+				{
+					bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+				}
+				if((weaknessDamage > bestDamage) && targetWeakness)
+				{
+					m_CurrentAttack = weaknessAttack;
+				}
+				else
+				{
+					m_CurrentAttack = bestAttack;
+				}
 			}
 			else
 			{
 				m_CurrentAttack = bestAttack;
 			}
-		}
-		else
-		{
-			m_CurrentAttack = bestAttack;
-		}
+
+			recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth );
+			int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType()));
+			numAddedWeaknessAttacks = Random(0,numEnemyAttacks);
+			attackTries--;
+		}while( numAddedWeaknessAttacks != 0 && attackTries > 0 && recoilAfterMath <= 0 );
 		m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 
 		msg.type = Msg_Attacked;
@@ -438,36 +479,47 @@ void CCharEntity::StrongestAttack( SMessage msg )
 		{
 			TEntityUID target;
 
-			if(type == "enemy")
-			{
-				target = LowestHealthAlly();
-			}
-			else
-			{
-				target = LowestHealthEnemy();
-			}
+			int attackTries = 5;
+			int numAddedWeaknessAttacks = 0;
+			int recoilAfterMath = 100;
 
-			int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
-			bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
-			int weaknessAttack = 0;
-
-			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+			do
 			{
-				if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+				if(type == "enemy")
 				{
-					weaknessAttack = i;
-					foeWeakness = true;
+					target = LowestHealthAlly();
 				}
-			}
+				else
+				{
+					target = LowestHealthEnemy();
+				}
 
-			if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).GetCost() > 0)
-			{
-				m_CurrentAttack = weaknessAttack;
-			}
-			else
-			{
-				m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
-			}
+				int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
+				bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
+				int weaknessAttack = 0;
+
+				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
+				{
+					if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+					{
+						weaknessAttack = i;
+						foeWeakness = true;
+					}
+				}
+
+				if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).GetCost() > 0)
+				{
+					m_CurrentAttack = weaknessAttack;
+				}
+				else
+				{
+					m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
+				}
+				recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth );
+				int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType()));
+				numAddedWeaknessAttacks = Random(0,numEnemyAttacks);
+				attackTries--;
+			}while( numAddedWeaknessAttacks != 0 && attackTries > 0 && recoilAfterMath <= 0 );
 			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 
 			msg.type = Msg_Attacked;

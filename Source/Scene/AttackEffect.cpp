@@ -18,6 +18,7 @@ CAttackEffect::CAttackEffect(vector<std::string> tempName, std::string name)
 	
 	m_TargetPos = CVector3(0.0f, 0.0f, 0.0f);
 	m_Target = NULL;
+	m_CurrentEffect = 0;
 
 	m_State = Inactive;
 }
@@ -31,14 +32,11 @@ void CAttackEffect::Update( TFloat32 updateTime )
 {
 	if ( m_State == Active )
 	{
+		m_LifeTime -= updateTime;
 		CEntity* attack = EntityManager.GetEntity(m_Effect[m_CurrentEffect]);
-		//attack->Matrix().FaceTarget( m_TargetPos );
 		attack->Matrix().MoveLocalZ( ATTACK_SPEED * updateTime );
 
-		TFloat32 X = fabs(attack->Position().x - m_TargetPos.x);
-		TFloat32 Z = fabs(attack->Position().z - m_TargetPos.z);
-
-		if( X < 0.2f && Z < 0.2f )
+		if(Distance(m_TargetPos, attack->Position()) < 0.2f || m_LifeTime <= 0)
 		{
 			Messenger.SendMessage( m_Target, m_MSG );
 			m_MSG.type = Msg_Act;
@@ -65,6 +63,8 @@ void CAttackEffect::StartAttack( CVector3 attackerPos, TEntityUID target, SMessa
 
 	m_State = Active;
 
+	m_LifeTime = 5.0f;
+
 	m_TargetPos = EntityManager.GetCharEntity(target)->Position();
 	m_TargetPos.y += 1;
 	m_Target = target;
@@ -80,11 +80,6 @@ void CAttackEffect::Reset()
 	m_Target = NULL;
 	m_State = Inactive;
 	EntityManager.GetEntity( m_Effect[m_CurrentEffect] )->Matrix().SetY( -10.0f );
-}
-
-CVector3 CAttackEffect::getPos()
-{
-	return EntityManager.GetEntity( m_Effect[m_CurrentEffect] )->Position();
 }
 
 }

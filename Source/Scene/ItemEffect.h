@@ -12,7 +12,7 @@ namespace gen
 
 const int ITEM_SPEED = 10;
 
-enum eItemState { ActiveI,InactiveI };
+enum EItemState { ActiveI,InactiveI };
 
 class CItemEffect
 {
@@ -23,8 +23,10 @@ private:
 	vector<TEntityUID> m_Effect;
 	int m_CurrentEffect;
 
-	eItemState m_State;
+	EItemState m_State;
 	SMessage m_MSG;
+
+	float m_LifeTime;
 
 public:
 	CItemEffect(void);
@@ -33,6 +35,11 @@ public:
 	void Update(TFloat32 updateTime);
 
 	void StartEffect(CVector3 attackerPos,TEntityUID target,SMessage msg);
+
+	EItemState getState()
+	{
+		return m_State;
+	}
 
 	void Reset();
 };

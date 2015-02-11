@@ -1,8 +1,50 @@
-﻿Build started 09/02/2015 23:04:52.
-     1>Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Clean target(s)).
+﻿Build started 11/02/2015 17:40:19.
+     1>Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Build target(s)).
        Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
-     1>Done Building Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" (Clean target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ISource\AntTweakBar /ISource\Common /ISource\Math /ISource\UI /ISource\Scene /ISource\Render /ISource\Data /ISource\tinyxml /ISource\FMod /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /D _USING_V110_SDK71_ /GF /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /wd4996 /analyze- /errorReport:prompt Source\Battle.cpp
+         Battle.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.exe" /INCREMENTAL:NO /NOLOGO d3dxof.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib AntTweakBar64.lib fmodex64_vc.lib fmodex_vc.lib fmod_event64.lib fmod_event.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.pdb" /SUBSYSTEM:WINDOWS,"5.01" /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\halfm_000\Desktop\Battle\Release\Battle.lib" /MACHINE:X86 /SAFESEH /IGNORE:4089 Release\AttackEffect.obj
+         Release\Attacks.obj
+         Release\Camera.obj
+         Release\CharacterEntity.obj
+         Release\Defence.obj
+         Release\Entity.obj
+         Release\EntityManager.obj
+         Release\ItemEffect.obj
+         Release\Items.obj
+         Release\Light.obj
+         Release\Messenger.obj
+         Release\CFatalException.obj
+         Release\CHashTable.obj
+         Release\CTimer.obj
+         Release\MSDefines.obj
+         Release\Utility.obj
+         Release\Mesh.obj
+         Release\RenderMethod.obj
+         Release\CImportXFile.obj
+         Release\tinystr.obj
+         Release\tinyxml.obj
+         Release\tinyxmlerror.obj
+         Release\tinyxmlparser.obj
+         Release\xmltest.obj
+         Release\Input.obj
+         Release\BaseMath.obj
+         Release\CMatrix2x2.obj
+         Release\CMatrix3x3.obj
+         Release\CMatrix4x4.obj
+         Release\CQuaternion.obj
+         Release\CQuatTransform.obj
+         Release\CVector2.obj
+         Release\CVector3.obj
+         Release\CVector4.obj
+         Release\MathIO.obj
+         Release\Battle.obj
+         Release\MainApp.obj
+         CarTag_2012.vcxproj -> C:\Users\halfm_000\Desktop\Battle\Release\Battle.exe
+     1>Done Building Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.01
+Time Elapsed 00:00:02.94

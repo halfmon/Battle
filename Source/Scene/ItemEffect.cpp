@@ -26,13 +26,11 @@ void CItemEffect::Update(TFloat32 updateTime)
 {
 	if(m_State == ActiveI)
 	{
+		m_LifeTime -= updateTime;
 		CEntity* item = EntityManager.GetEntity(m_Effect[m_CurrentEffect]);
-		item->Matrix().MoveLocalZ(ITEM_SPEED * updateTime);
+		item->Matrix().MoveY(ITEM_SPEED * updateTime);
 
-		TFloat32 X = fabs(item->Position().x - m_TargetPos.x);
-		TFloat32 Z = fabs(item->Position().z - m_TargetPos.z);
-
-		if(X < 0.2f && Z < 0.2f)
+		if(Distance(m_TargetPos, item->Position()) < 0.2f || m_LifeTime <= 0)
 		{
 			if(m_MSG.type != Msg_AddPoison)
 			{
@@ -56,7 +54,7 @@ void CItemEffect::Update(TFloat32 updateTime)
 
 void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage msg)
 {
-	switch(msg.type)
+	/*switch(msg.type)
 	{
 	case Msg_HealthRestored:
 		m_CurrentEffect = 0;
@@ -70,22 +68,17 @@ void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage ms
 	case Msg_Revive:
 		m_CurrentEffect = 3;
 		break;
-	}
+	}*/
+	m_LifeTime = 5.0f;
+
+	m_CurrentEffect = msg.item.effect;
 
 	CEntity* effect = EntityManager.GetEntity(m_Effect[m_CurrentEffect]);
 
 	m_State = ActiveI;
 
-	if(target == msg.from)
-	{
-		m_TargetPos = attackerPos;
-		m_TargetPos.y += 5;
-	}
-	else
-	{
-		m_TargetPos = EntityManager.GetCharEntity(target)->Position();
-		m_TargetPos.y += 1;
-	}
+	m_TargetPos = attackerPos;
+	m_TargetPos.y += 3;
 
 	m_Target = target;
 	attackerPos.y += 1;

@@ -45,8 +45,8 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>Source\AntTweakBar\lib;$(IncludePath)</IncludePath>
-    <LibraryPath>Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>Source\AntTweakBar\include;Source\FMod\api\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>Source\FMod\api\lib;Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>Source\FMod\api\lib;Source\AntTweakBar\lib;$(LibraryPath)</LibraryPath>
@@ -55,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Source\AntTweakBar\lib;Source\AntTweakBar\include;Source\tinyxml;Source\Common;Source\Math;Source\UI;Source\Scene;Source\Render;Source\Data;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source\AntTweakBar\lib;Source\AntTweakBar\include;Source\tinyxml;Source\Common;Source\Math;Source\UI;Source\Scene;Source\Render;Source\Data;Source\FMod;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -68,7 +68,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9d.lib;d3d9.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dxof.lib;dxguid.lib;d3dx9d.lib;d3d9.lib;winmm.lib;fmodex_vc.lib;fmod_event.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)CarTag.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

@@ -11,7 +11,7 @@ namespace gen
 {
 const int ATTACK_SPEED = 10;
 
-enum eAttackState { Active, Inactive };
+enum EAttackState { Active, Inactive };
 
 class CAttackEffect
 {
@@ -21,10 +21,12 @@ private:
 	TEntityUID m_Target;
 	vector<TEntityUID> m_Effect;
 
-	eAttackState m_State;
+	EAttackState m_State;
 	SMessage m_MSG;
 
 	int m_CurrentEffect;
+
+	float m_LifeTime;
 
 public:
 	CAttackEffect(void);
@@ -45,11 +47,11 @@ public:
 	{
 		return m_TargetPos;
 	}
-	eAttackState getState()
+	EAttackState getState()
 	{
 		return m_State;
 	}
-	CVector3 getPos();
+
 };
 
 }

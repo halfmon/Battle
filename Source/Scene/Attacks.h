@@ -67,7 +67,7 @@ public:
 
 	SAttack Attack(TEntityUID attacker);
 
-	bool WeaknesHasEffect( EAttackElement element );
+	int WeaknesHasEffect( vector<EAttackElement> element );
 
 	int RecoilCalculation( int health );
 
