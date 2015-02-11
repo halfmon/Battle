@@ -211,7 +211,9 @@
     <None Include="Source\Render\VS_VertexLighting1NoTex.vsh" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="Attacks.xml" />
+    <Xml Include="Attacks.xml">
+      <SubType>Designer</SubType>
+    </Xml>
     <Xml Include="Characters.xml">
       <SubType>Designer</SubType>
     </Xml>

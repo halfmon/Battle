@@ -734,6 +734,14 @@ bool CCharEntity::Update( TFloat32 updateTime )
 			}
 		}
 
+		for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
+		{
+			if ( (*it).turns > -50 && (*it).turns <= 0 )
+			{
+				m_WeaknessList.erase( it );
+			}
+		}
+
 	}
 
 	if(m_State == Dead)

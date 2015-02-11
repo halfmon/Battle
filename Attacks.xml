@@ -26,5 +26,8 @@
     <Attack Name="Explosion" Type="Magical"  Element="Fire"    Cost="50" Damage="60" Recoil="200.0">
       <AddedWeakness Element="None" Modifier="0" Turns="-1"/>
     </Attack>
+    <Attack Name="Overheat" Type="Magical"  Element="Fire"    Cost="" Damage="70" Recoil="200.0">
+      <AddedWeakness Element="Fire" Modifier="2.0" Turns="6"/>
+    </Attack>
   </Attacks>
 </Level>

@@ -46,6 +46,8 @@ public:
 		m_Stats.intelligence = in;
 		m_Stats.speed = sp;
 		m_BaseWeakness.element = weak;
+		m_BaseWeakness.modifier = 1.0f;
+		m_BaseWeakness.turns = -100;
 		m_AI = AI;
 
 		for(int i = 0; i < static_cast<int>(attacks.size()); i++)

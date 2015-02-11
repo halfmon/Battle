@@ -14,8 +14,8 @@
     <EntityTempate Type="enemy" Name="Panda"   Mesh="FiatPanda.x"     HP="150" MP="180"  Strength="40"  Inteligence="30" Speed="80" Weakness="Ice"  AI="2">
       <Attacks>
         <Attack Name="Crush"/>
-        <Attack Name="Explosion"/>
         <Attack Name="Lightning"/>
+        <Attack Name="Overheat"/>
       </Attacks>
       <Defences>
         <Defence Name="Basic Physical"/>
