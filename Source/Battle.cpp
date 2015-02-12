@@ -66,6 +66,7 @@ extern CMessenger Messenger;
 // Global game/scene variables
 //-----------------------------------------------------------------------------
 
+// Effects to visualise the use of attacks and items
 CAttackEffect attackEffect;
 CItemEffect itemEffect;
 
@@ -455,6 +456,7 @@ EDefenceType stringToDefenceType(std::string type)
 //-----------------------------------------------------------------------------
 // Scene management
 //-----------------------------------------------------------------------------
+// Setup defence using XML
 void DefenceSetup()
 {
 	TiXmlHandle hItemDoc(&defenceDoc);
@@ -481,6 +483,7 @@ void DefenceSetup()
 		ListOfDefence.push_back(CDefence( name, type, reciveType, element, modifier, cost ));
 	}
 }
+// Setup items using XML
 void ItemSetup()
 {
 	TiXmlHandle hItemDoc(&itemDoc);
@@ -503,6 +506,7 @@ void ItemSetup()
 		ListOfItems.push_back(CItem(name,effect,value));
 	}
 }
+// Setup attacks using XML
 void AttackSetup()
 {
 	TiXmlHandle hAttackDoc(&attackDoc);
@@ -664,7 +668,7 @@ void CharacterSetup()
 	SetUpAttackOrder();
 }
 
-//Setup ant TweakBar
+// Functions for and TweakBar buttons
 void TW_CALL StartRound(void* clientData)
 {
 	if(!started)
@@ -907,6 +911,7 @@ void TW_CALL InventoryRandom(void* clientData)
 	}
 }
 
+//Setup ant TweakBar 
 void TweakBarSetup()
 {
 	myBar = TwNewBar( "Tweak Bar" );
@@ -1184,9 +1189,8 @@ void RenderSceneText( float updateTime )
 		{
 			if ( debugInfoOn )
 			{
-				RenderText( "Attack: "  + allyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
+				RenderText( "Attack: "  + allyEntity->GetAttackName(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + allyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
-				RenderText( "Items: "   + allyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
 			}
 		}
 		int HUDX = ViewportWidth - (ViewportWidth / 3);
@@ -1227,9 +1231,8 @@ void RenderSceneText( float updateTime )
 		{
 			if( debugInfoOn )
 			{
-				RenderText( "Attack: "  + enemyEntity->GetAttackElement(),  X, Y,    0.6f, 1.0f, 0.6f, true );
+				RenderText( "Attack: "  + enemyEntity->GetAttackName(),  X, Y,    0.6f, 1.0f, 0.6f, true );
 				RenderText( "Defence: " + enemyEntity->GetDefenceInfo(),    X, Y+10, 0.6f, 1.0f, 0.6f, true );
-				RenderText( "Items: "   + enemyEntity->GetNumInInvantory(), X, Y+20, 0.6f, 1.0f, 0.6f, true );
 			}
 		}
 		int HUDX = 0 + (ViewportWidth / 10);
@@ -1277,7 +1280,6 @@ void RenderSceneText( float updateTime )
 // Update the scene between rendering
 void UpdateScene( float updateTime )
 {
-
 	// Call all entity update functions
 	EntityManager.UpdateAllEntities( updateTime );
 	attackEffect.Update( updateTime * effectSpeedModifier );
@@ -1336,6 +1338,26 @@ void UpdateScene( float updateTime )
 		{
 			Messenger.SendMessage( *it, msg );
 		}
+	}
+
+	static int attackOrderPos;
+	if( started )
+	{
+		if( attackEffect.getState() == Inactive && itemEffect.getState() == InactiveI )
+		{
+			SMessage msg;
+			msg.type = Msg_Act;
+			attackOrderPos++;
+			if(attackOrderPos >= NumTotal)
+			{
+				attackOrderPos = 0;
+			}
+			Messenger.SendMessage(AttackOrder[attackOrderPos],msg);
+		}
+	}
+	else
+	{
+		attackOrderPos = 0;
 	}
 
 	// Move the camera

@@ -16,6 +16,7 @@
         <Attack Name="Crush"/>
         <Attack Name="Lightning"/>
         <Attack Name="Overheat"/>
+        <Attack Name="Explosion"/>
       </Attacks>
       <Defences>
         <Defence Name="Basic Physical"/>

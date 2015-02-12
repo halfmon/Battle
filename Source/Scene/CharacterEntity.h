@@ -42,12 +42,15 @@ public:
 	{
 		m_MaxHealth = maxHealth;
 		m_MaxMagic = maxMagic;
+
 		m_Stats.strength = st;
 		m_Stats.intelligence = in;
 		m_Stats.speed = sp;
+
 		m_BaseWeakness.element = weak;
 		m_BaseWeakness.modifier = 1.0f;
 		m_BaseWeakness.turns = -100;
+
 		m_AI = AI;
 
 		for(int i = 0; i < static_cast<int>(attacks.size()); i++)
@@ -194,38 +197,36 @@ private:
 /////////////////////////////////////
 //	Public interface
 public:
+	//The implementation of the update function for the character entities.
 	virtual bool Update(TFloat32 updateTime);
+	// The character picks a random target from the other team and attacks them with a random attack that they can use.
+	// Will keep repicking the attack if they do not have the magic to use the chosen attack.
 	virtual void RandomAttack( SMessage );
+	// Picks a target that has the a weakness to an attack the character has, and will attack with the strongest attack they have that the target is weak too. 
 	virtual void WeaknessAttack( SMessage );
+	// Attacks the target with the lowest current health, with the strongest attack that they have.
 	virtual void StrongestAttack( SMessage );
+	// Runs through the rules for taking damage.
+	// The cost of defence is decided when it is chosen so the check is not needed for the cost.
 	virtual void TakingDamage( SMessage );
 
+	// Takes an item class and add that item to the characters invantory.
 	virtual void AddItemToInvantory( CItem );
+	// Lets the character us an item in it's invantory. Returns true if an item has been used and false if no items has been used.
 	virtual bool UseItem( SMessage );
 
-	TInt32 GetCurrentHealth()
-	{
-		return m_CurrentHealth;
-	}
-	TInt32 GetCurrentMagic()
-	{
-		return m_CurrentMagic;
-	}
-	TInt32 GetNumInInvantory();
-	string GetAttackElement();
+	// Used to get the name of the last attack the character used.
+	string GetAttackName();
+	// Used to get a string for the output of whether or not the character is defending.
 	string GetDefenceInfo();
 
-	CCharTemplate* GetTemplate()
-	{
-		return m_CharTemplate;
-	}
-
+	// Takes a new weakness and adds it to the list of weaknesses.
 	void AddWeakness(SWeakness newWeakness)
 	{
 		m_WeaknessList.push_back(newWeakness);
 	}
 
-	// Returns true if the character is dead and false if they are alive
+	// Returns true if the character is dead and false if they are alive.
 	bool isDead()
 	{
 		if ( m_State != Dead )
@@ -236,6 +237,29 @@ public:
 		{
 			return true;
 		}
+	}
+
+	////////////////////
+	//     Getters
+	TInt32 GetCurrentHealth()
+	{
+		return m_CurrentHealth;
+	}
+	TInt32 GetCurrentMagic()
+	{
+		return m_CurrentMagic;
+	}
+	CCharTemplate* GetTemplate()
+	{
+		return m_CharTemplate;
+	}
+	TInt32 GetNumWeakness()
+	{
+		return static_cast<TInt32>( m_WeaknessList.size() );
+	}
+	EAttackElement GetWeakness( TInt32 pick ) // Returns the element of the weakness at that point in the list.
+	{
+		return m_WeaknessList[pick].element;
 	}
 };
 

@@ -17,7 +17,7 @@ namespace gen
 {
 
 /* Picks the best attack based only on the damage value of the attack. If two attacks could kill the target based on the attacks damage it will choose the 
-attack that cost the least if it is magical. */
+attack that cost the least. */
 TInt32 PickBestAttack( CCharTemplate* attackList, TInt32 targetHealth, TInt32 attackerMagic )
 {
 	CAttack preAttack = attackList->GetAttack(0);
@@ -123,49 +123,21 @@ CCharEntity::CCharEntity
 	m_WeaknessList.push_back(charTemplate->GetWeakness());
 }
 
-// Used to get a string of the attack for outputing the name of the attack
-string CCharEntity::GetAttackElement()
+// Used to get the name of the last attack the character used.
+std::string CCharEntity::GetAttackName()
 {
 	if ( m_CurrentAttack == -1 )
 	{
 		return "???";
 	}
-	CAttack attack = m_CharTemplate->GetAttack(m_CurrentAttack);
-	if ( attack.GetElement() == Cut )
-	{
-		 return "Cut";
-	}
-	else if ( attack.GetElement() == Crush )
-	{
-		return "Crush";
-	}
-	else if ( attack.GetElement() == Stab )
-	{
-		return "Stab";
-	}
-	else if ( attack.GetElement() == Lightning )
-	{
-		return "Lightning";
-	}
-	else if ( attack.GetElement() == Fire )
-	{
-		return "Fire";
-	}
-	else if ( attack.GetElement() == Ice )
-	{
-		return "Ice";
-	}
-	else if ( attack.GetElement() == Arcane )
-	{
-		return "Arcane";
-	}
 	else
 	{
-		return "???";
+		return m_CharTemplate->GetAttack(m_CurrentAttack).GetName();
 	}
+	return "???";
 }
-// Used to get a string for the output of whether or not the character is defending
-string CCharEntity::GetDefenceInfo()
+// Used to get a string for the output of whether or not the character is defending.
+std::string CCharEntity::GetDefenceInfo()
 {
 	if ( m_CurrentDefence == -1 )
 	{
@@ -177,9 +149,11 @@ string CCharEntity::GetDefenceInfo()
 	}
 }
 
+// The character picks a random target from the other team and attacks them with a random attack that they can use.
+// Will keep repicking the attack if they do not have the magic to use the chosen attack.
 void CCharEntity::RandomAttack( SMessage msg )
 {
-	// Choosing Attack
+	// Choosing Attack: Random pick an attack, check if the character has the magic to use the attack and if they do they will choose that attack.
 	m_CurrentAttack = Random(0, m_CharTemplate->GetAttackNum()-1);
 	if ( m_CharTemplate->GetAttack(m_CurrentAttack).GetType() == Magical )
 	{
@@ -196,7 +170,7 @@ void CCharEntity::RandomAttack( SMessage msg )
 		}
 	}
 
-	// Choosing Target
+	// Choosing Target: Randomly pick a target from the other team.
 	TEntityUID target;
 	if( m_CharTemplate->GetType() == "enemy" )
 	{
@@ -207,15 +181,16 @@ void CCharEntity::RandomAttack( SMessage msg )
 		target = RandomEnemy();
 	}
 
+	// Setting up the attack message.
 	msg.type = Msg_Attacked;
 	msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 	if(msg.attack.type == Physical)
 	{
-		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f);
+		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetStrength()) / 100.0f) + 0.5f); //Multiplies the attack damage by the strength of the character.
 	}
 	else
 	{
-		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f);
+		msg.attack.damage = (((m_CharTemplate->GetAttack(m_CurrentAttack).GetDamage() * m_CharTemplate->GetIntelligence()) / 100.0f) + 0.5f); //Multiplies the attack damage by the Intelligence of the character.
 	}
 	msg.from = GetUID();
 	if(effectOn)
@@ -225,18 +200,22 @@ void CCharEntity::RandomAttack( SMessage msg )
 	else
 	{
 		Messenger.SendMessage( target, msg );
-		msg.type = Msg_Act;
+		/*msg.type = Msg_Act;
 		msg.order++;
 		if(msg.order >= NumTotal)
 		{
 			msg.order = 0;
 		}
-		Messenger.SendMessage(AttackOrder[msg.order],msg);
+		Messenger.SendMessage(AttackOrder[msg.order],msg);*/
 	}
 	m_State = Wait;
 }
+// Picks a target that has the a weakness to an attack the character has, and will attack with the strongest attack they have that the target is weak too. 
 void CCharEntity::WeaknessAttack( SMessage msg )
 {
+	// Checks the charactesr current health and if it is lower then 25% of their max health decides if it will defend or not.
+	// The character picks a random number between 0 and 10 and if it is less then 7 they will pick a random one of their defence types and use it if they
+	// have enough magic.
 	if ( m_CurrentHealth < m_CharTemplate->GetMaxHealth() / 4 )
 	{
 		int chance = Random( 0, 10 );
@@ -253,6 +232,7 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 			m_CurrentMagic -= cost;
 		}
 	}
+	// Makeing sure that they are not both defening and using an item in the same turn.
 	bool useItem;
 	if ( m_Defend )
 	{
@@ -266,111 +246,97 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 	if(!m_Defend && !useItem)
 	{
 		TEntityUID target;
-		int attackTries = 5;
-		int numAddedWeaknessAttacks = 0;
-		int recoilAfterMath = 100;
+		int attackTries = 5; // Number of times that the character will loop around for the recoil and additional weaknesses.
+		int numAddedWeaknessAttacks = 0; // The number of attacks that the character will become weak to from the attack.
+		int recoilAfterMath = 100; // The health that the character will have after the the recoil damge from the attack.
+
+		if(Template()->GetType() == "enemy")
+		{
+			bool weakness = false;
+			for(auto it = Allies.begin(); it != Allies.end(); it++) // Runs through all of the entities in the allies list.
+			{
+				for ( int i = 0; i < static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetNumWeakness(); i++ ) // Runs through all of the weakness for each entity.
+				{
+					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetWeakness( i ); // Get the current weakness.
+					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();                       // Check if the target is dead.
+					for(int j = 0; j < m_CharTemplate->GetAttackNum(); j++)                                                    // Run through all of the attacks the character has.
+					{
+						if(targetWeakness == m_CharTemplate->GetAttack(j).GetElement() && !targetDead)                         // Check if attack is the same element as the defence and that the target is not dead.
+						{
+							weakness = true;
+							target = *it;
+						}
+					}
+				}
+			}
+			if(!weakness ) //If there is no target with a weakness to an attack the character has then it will pick the one with the lowest current health.
+			{
+				target = LowestHealthAlly();
+			}
+		}
+		else // Sames as above but for the other team.
+		{
+			bool weakness = false;
+			for(auto it = Enemies.begin(); it != Enemies.end(); it++)
+			{
+				for ( int i = 0; i < static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetNumWeakness(); i++ )
+				{
+					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->GetWeakness( i );
+					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
+					for(int j = 0; j < m_CharTemplate->GetAttackNum(); j++)
+					{
+						if(targetWeakness == m_CharTemplate->GetAttack(j).GetElement() && !targetDead)
+						{
+							weakness = true;
+							target = *it;
+						}
+					}
+				}
+			}
+			if(!weakness)
+			{
+				target = LowestHealthEnemy();
+			}
+		}
 
 		do
 		{
-			if(Template()->GetType() == "enemy")
-			{
-				bool weakness = false;
-				for(auto it = Allies.begin(); it != Allies.end(); it++)
-				{
-					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
-					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
-					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-					{
-						if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
-						{
-							weakness = true;
-							target = *it;
-						}
-					}
-				}
-				if(!weakness )
-				{
-					target = LowestHealthAlly();
-				}
-			}
-			else
-			{
-				bool weakness = false;
-				for(auto it = Enemies.begin(); it != Enemies.end(); it++)
-				{
-					EAttackElement targetWeakness = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetWeakness().element;
-					bool targetDead = static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->isDead();
-					for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
-					{
-						if(targetWeakness == m_CharTemplate->GetAttack(i).GetElement() && !targetDead)
-						{
-							weakness = true;
-							target = *it;
-						}
-					}
-				}
-				if(!weakness)
-				{
-					target = LowestHealthEnemy();
-				}
-			}
-			int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
-			bool targetWeakness = false;
+			int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth(); // Get the targets current health.
+			bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
 			int weaknessAttack = 0;
+
 			for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 			{
-				if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+				// For each attack attack check if the target has a weakness to the attack and set that as the weakness attack to use.
+				for ( int j = 0; j < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetNumWeakness(); j++ ) // Runs through all of the weakness for each entity.
 				{
-					weaknessAttack = i;
-					targetWeakness = true;
+					if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetWeakness(j) == m_CharTemplate->GetAttack(i).GetElement())
+					{
+						weaknessAttack = i;
+						foeWeakness = true;
+					}
 				}
 			}
-			int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
 
-			if(bestAttack != weaknessAttack)
+			// If the character has an attack that the target is weak to it checks that it has enough magic to use the attack.
+			if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).GetCost() > 0)
 			{
-				CAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack);
-				CAttack bestA = m_CharTemplate->GetAttack(bestAttack);
-
-				float weaknessDamage = weaknessA.GetDamage() * 2;
-				float bestDamage = bestA.GetDamage();
-				if(weaknessA.GetType() == Physical)
-				{
-					weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
-				}
-				else
-				{
-					weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
-				}
-				if(bestA.GetType() == Physical)
-				{
-					bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
-				}
-				else
-				{
-					bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
-				}
-				if((weaknessDamage > bestDamage) && targetWeakness)
-				{
-					m_CurrentAttack = weaknessAttack;
-				}
-				else
-				{
-					m_CurrentAttack = bestAttack;
-				}
+				m_CurrentAttack = weaknessAttack;
 			}
-			else
+			else // If the character cannot use an attack that the target is weak to then they will use the strongest attack that they can.
 			{
-				m_CurrentAttack = bestAttack;
+				m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
 			}
 
-			recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth );
-			int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType()));
-			numAddedWeaknessAttacks = Random(0,numEnemyAttacks);
-			attackTries--;
+			recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth ); //Get the health left after the recoil from the attack.
+			int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType())); // Get the number of attacks that the character will become weak to.
+			numAddedWeaknessAttacks = Random(0,numEnemyAttacks); // Get a random number based on the number of attacks the character will become weak to. The more attacks the less likely to choose that attack.
+			attackTries--; // Decrease the number of tries for picking an attack.
+
 		}while( numAddedWeaknessAttacks != 0 && attackTries > 0 && recoilAfterMath <= 0 );
-		m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
+		m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost(); // Decrease current magic by the cost of the attack.
 
+		// Setting up the attack message.
 		msg.type = Msg_Attacked;
 		msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 		if(msg.attack.type == Physical)
@@ -397,7 +363,8 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 			Messenger.SendMessage(target,msg);
 		}
 	}
-	if(!effectOn)
+	// If the visual effects are not being used then they makse sure that the next character makes their move.
+	/*if(!effectOn)
 	{
 		msg.type = Msg_Act;
 		msg.order++;
@@ -406,15 +373,18 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 			msg.order = 0;
 		}
 		Messenger.SendMessage(AttackOrder[msg.order],msg);
-	}
+	}*/
 	m_State = Wait;
 }
+// Attacks the target with the lowest current health, with the strongest attack that they have.
 void CCharEntity::StrongestAttack( SMessage msg )
 {
-	//Check to see
+	//Check to see if the character can use an item.
 	if(!UseItem(msg))
 	{
 		std::string type = m_CharTemplate->GetType();
+		// Checks the charactesr current health and if it is lower then 25% of their max health decides if it will defend or not.
+		// The character picks a random number between 0 and 10 and if it is less then 7 will decide what defence to used based on the stats of the other team.
 		if(m_CurrentHealth < m_CharTemplate->GetMaxHealth() / 4)
 		{
 			int chance = Random(0,10);
@@ -425,6 +395,7 @@ void CCharEntity::StrongestAttack( SMessage msg )
 
 				if(type == "enemy")
 				{
+					// Gets the average strength and intelligence of the other side.
 					for(auto it = Allies.begin(); it != Allies.end(); it++)
 					{
 						averageStrength += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetStrength();
@@ -438,6 +409,7 @@ void CCharEntity::StrongestAttack( SMessage msg )
 				}
 				else
 				{
+					// Gets the average strength and intelligence of the other side.
 					for(auto it = Enemies.begin(); it != Enemies.end(); it++)
 					{
 						averageStrength += static_cast<CCharEntity*>(EntityManager.GetEntity(*it))->m_CharTemplate->GetStrength();
@@ -449,13 +421,15 @@ void CCharEntity::StrongestAttack( SMessage msg )
 					}
 					averageIntelligence /= Enemies.size();
 				}
+				// If the averages strength of the other team is greater then the average intelligence then the character will pick a defence that can be used against physical attacks as they are more
+				// likely to be attacked with a physical attack. if the average intelligence is greater then it will pick a defence that can be used against magical attacks.
 				if(averageStrength > averageIntelligence)
 				{
 					do
 					{
 						m_CurrentDefence = Random(0,m_CharTemplate->GetDefenceNum()-1);
-					} while (m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).GetCost() < 0 && m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Physical
-						&& m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Both);
+					} while (m_CurrentMagic - m_CharTemplate->GetDefence(m_CurrentDefence).GetCost() < 0 && ( m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Physical
+						|| m_CharTemplate->GetDefence(m_CurrentDefence).GetAttackRecivedType() != Both ) );
 				}
 				else
 				{
@@ -475,53 +449,91 @@ void CCharEntity::StrongestAttack( SMessage msg )
 				m_DefendLast = false;
 			}
 		}
+		// If the character is not defending then they will attack.
 		if(!m_Defend)
 		{
 			TEntityUID target;
 
-			int attackTries = 5;
-			int numAddedWeaknessAttacks = 0;
-			int recoilAfterMath = 100;
+			int attackTries = 5; // Number of times that the character will loop around for the recoil and additional weaknesses.
+			int numAddedWeaknessAttacks = 0; // The number of attacks that the character will become weak to from the attack.
+			int recoilAfterMath = 100; // The health that the character will have after the the recoil damge from the attack.
+
+			// Picking a target with the lowest health.
+			if(type == "enemy")
+			{
+				target = LowestHealthAlly();
+			}
+			else
+			{
+				target = LowestHealthEnemy();
+			}
 
 			do
 			{
-				if(type == "enemy")
-				{
-					target = LowestHealthAlly();
-				}
-				else
-				{
-					target = LowestHealthEnemy();
-				}
-
-				int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth();
-				bool foeWeakness = false; // Used to deside which attack to use based on if the target has a weakness
+				int targetHealth = static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetCurrentHealth(); // Get the targets health.
+				bool targetWeakness = false;
 				int weaknessAttack = 0;
-
 				for(int i = 0; i < m_CharTemplate->GetAttackNum(); i++)
 				{
-					if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->m_CharTemplate->GetWeakness().element == m_CharTemplate->GetAttack(i).GetElement())
+					// For each attack attack check if the target has a weakness to the attack and set that as the weakness attack to use.
+					for ( int j = 0; j < static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetNumWeakness(); j++ ) // Runs through all of the weakness for each entity.
 					{
-						weaknessAttack = i;
-						foeWeakness = true;
+						if(static_cast<CCharEntity*>(EntityManager.GetEntity(target))->GetWeakness(j) == m_CharTemplate->GetAttack(i).GetElement())
+						{
+							weaknessAttack = i;
+							targetWeakness = true;
+						}
 					}
 				}
+				int bestAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic); // Choose the strongest attack that the user has based on damage before stat modification.
 
-				if(foeWeakness && m_CurrentMagic - m_CharTemplate->GetAttack(weaknessAttack).GetCost() > 0)
+				if(bestAttack != weaknessAttack && targetWeakness) 
 				{
-					m_CurrentAttack = weaknessAttack;
+					CAttack weaknessA = m_CharTemplate->GetAttack(weaknessAttack); 
+					CAttack bestA = m_CharTemplate->GetAttack(bestAttack);
+	
+					// Find out how much damage the attack the target is weak to and the strongest attack the character can use will do after the stat modification.
+					float weaknessDamage = weaknessA.GetDamage() * 2;
+					float bestDamage = bestA.GetDamage();
+					if(weaknessA.GetType() == Physical)
+					{
+						weaknessDamage = weaknessDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+					}
+					else
+					{
+						weaknessDamage = weaknessDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+					}
+					if(bestA.GetType() == Physical)
+					{
+						bestDamage = bestDamage * m_CharTemplate->GetStrength() / 100.0f + 0.5f;
+					}
+					else
+					{
+						bestDamage = bestDamage * m_CharTemplate->GetIntelligence() / 100.0f + 0.5f;
+					}
+					if( weaknessDamage > bestDamage )
+					{
+						m_CurrentAttack = weaknessAttack;
+					}
+					else
+					{
+						m_CurrentAttack = bestAttack;
+					}
 				}
 				else
 				{
-					m_CurrentAttack = PickBestAttack(m_CharTemplate,targetHealth,m_CurrentMagic);
+					m_CurrentAttack = bestAttack;
 				}
-				recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth );
-				int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType()));
-				numAddedWeaknessAttacks = Random(0,numEnemyAttacks);
-				attackTries--;
-			}while( numAddedWeaknessAttacks != 0 && attackTries > 0 && recoilAfterMath <= 0 );
+	
+				recoilAfterMath = m_CharTemplate->GetAttack(m_CurrentAttack).RecoilCalculation( m_CurrentHealth ); //Get the health left after the recoil from the attack.
+				int numEnemyAttacks = m_CharTemplate->GetAttack(m_CurrentAttack).WeaknesHasEffect(getattacklist(m_CharTemplate->GetType())); // Get the number of attacks that the character will become weak to.
+				numAddedWeaknessAttacks = Random(0,numEnemyAttacks); // Get a random number based on the number of attacks the character will become weak to. The more attacks the less likely to choose that attack.
+				attackTries--; // Decrease the number of tries for picking an attack.
+
+			}while( numAddedWeaknessAttacks != 0 && attackTries > 0 && recoilAfterMath <= 0 ); //Makes sure that condition are met for doing the least harm to the character.
 			m_CurrentMagic -= m_CharTemplate->GetAttack(m_CurrentAttack).GetCost();
 
+			//Setting up the attack message.
 			msg.type = Msg_Attacked;
 			msg.attack = m_CharTemplate->GetAttack(m_CurrentAttack).Attack( GetUID() );
 			if(msg.attack.type == Physical)
@@ -544,7 +556,7 @@ void CCharEntity::StrongestAttack( SMessage msg )
 			}
 		}
 	}
-	if(!effectOn)
+	/*if(!effectOn)
 	{
 		msg.type = Msg_Act;
 		msg.order++;
@@ -553,17 +565,21 @@ void CCharEntity::StrongestAttack( SMessage msg )
 			msg.order = 0;
 		}
 		Messenger.SendMessage(AttackOrder[msg.order],msg);
-	}
+	}*/
 	m_State = Wait;
 }
 
-//The cost of defence is decided when it is chosen so the check is not needed for the cost.
+// Runs through the rules for taking damage.
+// The cost of defence is decided when it is chosen so the check is not needed for the cost.
 void CCharEntity::TakingDamage( SMessage msg )
 {
 	float defence = 1.0f;  //A modifier for the damage taken by the character.
+	// Going throught the types of defence and using the correct rules if the are defending.
+	// Does not go through if the type of damage that they are recieving damage from recoil.
 	if ( m_Defend && msg.attack.type != Recoil )
 	{
 		CDefence pick = m_CharTemplate->GetDefence(m_CurrentDefence);
+		// Regular: Makes sure that the defence type and element match the attack and change defence modifier if they do.
 		if (pick.GetType() == Regular)
 		{
 			if (pick.GetAttackRecivedType() == msg.attack.type || pick.GetAttackRecivedType() == Both)
@@ -574,6 +590,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 				}
 			}
 		}
+		// Reflect: Sets defence modifier to 0 so the user takes no damage, and sends a message to the attacker that they are taking the damage.
 		else if (pick.GetType() == Reflect)
 		{
 				defence = 0.0f;
@@ -583,6 +600,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 				msg.from = GetUID();
 				Messenger.SendMessage( from, msg );
 		}
+		// Pain Split: Sends a damage message to the attacker that is half of the damage of the attack.
 		else if (pick.GetType() == PainSplit)
 		{
 				defence = pick.GetModifier();
@@ -596,15 +614,23 @@ void CCharEntity::TakingDamage( SMessage msg )
 		m_Defend = false;
 		m_CurrentDefence = -1;
 	}
-	if ( msg.attack.element == m_CharTemplate->GetWeakness().element )
+	// Sets up extra damage done because of weaknesses. weaknessDamage is set to the negative of the attack damage so that it will equal 0 when added to the base damage
+	// if the character is not weak to the attack.
+	TFloat32 weaknessDamage = -msg.attack.damage;
+	for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
 	{
-		defence *= 2;
+		if ( msg.attack.element == (*it).element )
+		{
+			weaknessDamage = msg.attack.damage * (*it).modifier;
+		}
 	}
-	m_CurrentHealth -= static_cast<TInt32>(msg.attack.damage * defence);
+	m_CurrentHealth -= static_cast<TInt32>( (msg.attack.damage * defence) + (msg.attack.damage + weaknessDamage) );
 }
 
+//The implementation of the update function for the character entities.
 bool CCharEntity::Update( TFloat32 updateTime )
 {
+	//Checking the messages that are recived and decides what to do based on the mmessage recived.
 	SMessage msg;
 	while (Messenger.FetchMessage( GetUID(), &msg ))
 	{
@@ -626,21 +652,21 @@ bool CCharEntity::Update( TFloat32 updateTime )
 					TakingDamage( msg );
 				}
 				break;
-			case Msg_HealthRestored:
+			case Msg_HealthRestored: // Restored health and sets it to the max if it excides the characters max.
 				m_CurrentHealth += msg.item.value;
 				if ( m_CurrentHealth > m_CharTemplate->GetMaxHealth() )
 				{
 					m_CurrentHealth = m_CharTemplate->GetMaxHealth();
 				}
 				break;
-			case Msg_MagicRestored:
+			case Msg_MagicRestored: // Restored magic and sets it to the max if it excides the characters max.
 				m_CurrentMagic += msg.item.value;
 				if(m_CurrentMagic > m_CharTemplate->GetMaxMagic())
 				{
 					m_CurrentMagic = m_CharTemplate->GetMaxMagic();
 				}
 				break;
-			case Msg_Revive:
+			case Msg_Revive:  // Brings the target back from the dead with half of its maximum health.
 				if (m_State == Dead)
 				{
 					Matrix().SetY(0.0f);
@@ -648,19 +674,21 @@ bool CCharEntity::Update( TFloat32 updateTime )
 					m_CurrentHealth = m_CharTemplate->GetMaxHealth() / 2;
 				}
 				break;
-			case Msg_Poison:
+			case Msg_Poison: // Sets up the target to be poisoned.
 				m_Poison = IsPoisoned;
 				m_PoisonCount = 5;
 				break;
 		}
 	}
 
+	// Puts the character into the dead state if they have no health and is not dead.
 	if ( m_CurrentHealth <= 0 && m_State != Dead )
 	{
 		Matrix().SetY(-10.0f);
 		m_State = Dead;
 	}
 
+	//Used to clean up the inventory if they have none of a certain type of item by removing the empty reference to it.
 	if( m_Inventory.size() > 0 )
 	{
 		vector<int> none;
@@ -687,6 +715,7 @@ bool CCharEntity::Update( TFloat32 updateTime )
 
 	if (m_State == Act)
 	{
+		//Decides whether or not they attack based one whether there are any targets left alive.
 		bool attack = false;
 		if( Template()->GetType() == "ally" )
 		{
@@ -698,6 +727,7 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		}
 		if ( attack )
 		{
+			//Sets the variable for which AI is used depending on whether or not the template AI is being used.
 			int AIUsed;
 			if(templateAIOn)
 			{
@@ -708,6 +738,7 @@ bool CCharEntity::Update( TFloat32 updateTime )
 				AIUsed = generalAI;
 			}
 
+			// Picking which AI to use.
 			if ( AIUsed == 1 )
 			{
 				RandomAttack( msg );
@@ -721,8 +752,9 @@ bool CCharEntity::Update( TFloat32 updateTime )
 				StrongestAttack( msg );
 			}
 
-			numTurns++;
+			numTurns++; // Increase the count for the number of turns that have passed.
 
+			//Apply the poison damage if poisoned and removes it if the countdown has finished.
 			if(m_Poison == IsPoisoned)
 			{
 				m_PoisonCount--;
@@ -734,11 +766,16 @@ bool CCharEntity::Update( TFloat32 updateTime )
 			}
 		}
 
+		//Checking to see any limited time weaknesses are ready to be removed and decreaments the one that are not. Perminent weaknesses are set to below -50 so they don't get removed.
 		for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
 		{
 			if ( (*it).turns > -50 && (*it).turns <= 0 )
 			{
 				m_WeaknessList.erase( it );
+			}
+			if ( (*it).turns > -50 )
+			{
+				(*it).turns--;
 			}
 		}
 
@@ -746,7 +783,8 @@ bool CCharEntity::Update( TFloat32 updateTime )
 
 	if(m_State == Dead)
 	{
-		if(effectOn)
+		// Makes sure that the attacks continues.
+		/*if(effectOn)
 		{
 			if(attackEffect.getState() == Inactive)
 			{
@@ -768,12 +806,13 @@ bool CCharEntity::Update( TFloat32 updateTime )
 				msg.order = 0;
 			}
 			Messenger.SendMessage(AttackOrder[msg.order],msg);
-		}
+		}*/
 	}
 
 	return true;
 }
 
+// Takes an item class and add that item to the characters invantory.
 void CCharEntity::AddItemToInvantory( CItem newItem )
 {
 	bool haveOne = false;
@@ -796,8 +835,10 @@ void CCharEntity::AddItemToInvantory( CItem newItem )
 	}
 }
 
+// Lets the character us an item in it's invantory. Returns true if an item has been used and false if no items has been used.
 bool CCharEntity::UseItem( SMessage msg )
 {
+	// If no items in invantory, quits straight away.
 	if ( m_Inventory.size() == 0 )
 	{
 		return false;
@@ -806,6 +847,8 @@ bool CCharEntity::UseItem( SMessage msg )
 	{
 		for(int i = 0; i < static_cast<int>(m_Inventory.size()); i++)
 		{
+			// Finds the character on the same team that has the lowest health, checks if it is less they 10% if its maximum health.
+			// If it is less then 10% then uses a restore health message and and deceases the item by 1.
 			if ( m_Inventory[i].item.GetEffect() == restoreHealth )
 			{
 				TEntityUID current;
@@ -821,7 +864,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					hurt = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 
-				if ( hurt->GetCurrentHealth() < (hurt->m_CharTemplate->GetMaxHealth() / 10) )
+				if ( hurt->GetCurrentHealth() < (hurt->m_CharTemplate->GetMaxHealth() * 0.1) )
 				{
 					msg.type = Msg_HealthRestored;
 					msg.from = GetUID();
@@ -839,6 +882,8 @@ bool CCharEntity::UseItem( SMessage msg )
 				}
 
 			}
+			// Finds the character on the same team that has the lowest magic, checks if it is less they 10% if its maximum magic.
+			// If it is less then 10% then uses a restore health message and and deceases the item by 1.
 			else if ( m_Inventory[i].item.GetEffect() == restoreMana )
 			{
 				TEntityUID current;
@@ -871,6 +916,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					return true;
 				}
 			}
+			// Checks to see if a character on the same team is dead and then sends a revive message to the dead character and decrease item by 1.
 			else if ( m_Inventory[i].item.GetEffect() == revive )
 			{
 				TEntityUID target;
@@ -900,6 +946,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					return true;
 				}
 			}
+			// Checks to see if the character has not already used posion, and if it has not then it will use poison of the weapon.
 			else if ( m_Inventory[i].item.GetEffect() == poison )
 			{
 				if ( m_Poison != PoisonedWeapon )
@@ -917,16 +964,6 @@ bool CCharEntity::UseItem( SMessage msg )
 		return false;
 	}
 	return false;
-}
-
-TInt32 CCharEntity::GetNumInInvantory()
-{
-	int total = 0;
-	for ( int i = 0; i < static_cast<int>(m_Inventory.size()); i++ )
-	{
-		total += m_Inventory[i].Quantity;
-	}
-	return total;
 }
 
 } //namespace gen

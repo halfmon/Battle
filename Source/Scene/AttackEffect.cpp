@@ -39,13 +39,13 @@ void CAttackEffect::Update( TFloat32 updateTime )
 		if(Distance(m_TargetPos, attack->Position()) < 0.2f || m_LifeTime <= 0)
 		{
 			Messenger.SendMessage( m_Target, m_MSG );
-			m_MSG.type = Msg_Act;
+			/*m_MSG.type = Msg_Act;
 			m_MSG.order++;
 			if(m_MSG.order >= NumTotal)
 			{
 				m_MSG.order = 0;
 			} 
-			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);
+			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);*/
 			attack->Matrix().SetPosition( CVector3(0.0f, -10.0f, 0.0f) );
 
 			m_TargetPos = CVector3(0.0f,0.0f,0.0f);

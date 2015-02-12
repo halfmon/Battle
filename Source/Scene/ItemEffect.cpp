@@ -36,13 +36,13 @@ void CItemEffect::Update(TFloat32 updateTime)
 			{
 				Messenger.SendMessage(m_Target,m_MSG);
 			}
-			m_MSG.type = Msg_Act;
+			/*m_MSG.type = Msg_Act;
 			m_MSG.order++;
 			if(m_MSG.order >= NumTotal)
 			{
 				m_MSG.order = 0;
 			}
-			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);
+			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);*/
 			item->Matrix().SetPosition(CVector3(0.0f,-10.0f,0.0f));
 
 			m_TargetPos = CVector3(0.0f,0.0f,0.0f);
@@ -83,7 +83,7 @@ void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage ms
 	m_Target = target;
 	attackerPos.y += 1;
 	effect->Matrix().SetPosition(attackerPos);
-	effect->Matrix().FaceTarget(m_TargetPos);
+//	effect->Matrix().FaceTarget(m_TargetPos);
 	m_MSG;
 }
 
