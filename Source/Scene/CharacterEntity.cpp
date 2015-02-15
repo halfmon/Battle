@@ -739,15 +739,23 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		}
 
 		//Checking to see any limited time weaknesses are ready to be removed and decreaments the one that are not. Perminent weaknesses are set to below -50 so they don't get removed.
-		for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
+		if( m_WeaknessList.size() > 1 )
 		{
-			if ( (*it).turns > -50 )
+			vector<int> remove;
+			for( auto i = 0; i < m_WeaknessList.size(); i++ )
 			{
-				(*it).turns--;
-				if ( (*it).turns <= 0 )
+				if ( m_WeaknessList[i].turns > -50 )
 				{
-					m_WeaknessList.erase( it );
+					m_WeaknessList[i].turns--;
+					if ( m_WeaknessList[i].turns <= 0 )
+					{
+						remove.push_back( i );
+					}
 				}
+			}
+			for( int i = 0; i < remove.size(); i++ )
+			{
+				m_WeaknessList.erase( m_WeaknessList.begin() + remove[i] );
 			}
 		}
 
