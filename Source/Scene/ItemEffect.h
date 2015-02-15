@@ -10,7 +10,7 @@
 namespace gen
 {
 
-const int ITEM_SPEED = 10;
+const int ITEM_SPEED = 7;
 
 enum EItemState { ActiveI,InactiveI };
 

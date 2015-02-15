@@ -1,0 +1,8 @@
+﻿Build started 15/02/2015 12:39:47.
+     1>Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" on node 2 (Clean target(s)).
+       Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
+     1>Done Building Project "C:\Users\halfm_000\Desktop\Battle\CarTag_2012.vcxproj" (Clean target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.02

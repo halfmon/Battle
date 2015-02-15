@@ -83,6 +83,13 @@ bool FMODSetup()
 		return false;
 	}
 
+	result = FMOD_Channel_SetMode( backgroundChannel, FMOD_LOOP_NORMAL );
+	if (result != FMOD_OK )
+	{
+		return false;
+	}
+
+	
 
 	return true;
 }

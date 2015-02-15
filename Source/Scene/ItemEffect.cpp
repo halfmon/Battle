@@ -36,13 +36,6 @@ void CItemEffect::Update(TFloat32 updateTime)
 			{
 				Messenger.SendMessage(m_Target,m_MSG);
 			}
-			/*m_MSG.type = Msg_Act;
-			m_MSG.order++;
-			if(m_MSG.order >= NumTotal)
-			{
-				m_MSG.order = 0;
-			}
-			Messenger.SendMessage(AttackOrder[m_MSG.order],m_MSG);*/
 			item->Matrix().SetPosition(CVector3(0.0f,-10.0f,0.0f));
 
 			m_TargetPos = CVector3(0.0f,0.0f,0.0f);
@@ -54,7 +47,7 @@ void CItemEffect::Update(TFloat32 updateTime)
 
 void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage msg)
 {
-	/*switch(msg.type)
+	switch(msg.type)
 	{
 	case Msg_HealthRestored:
 		m_CurrentEffect = 0;
@@ -68,10 +61,10 @@ void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage ms
 	case Msg_Revive:
 		m_CurrentEffect = 3;
 		break;
-	}*/
+	}
 	m_LifeTime = 5.0f;
 
-	m_CurrentEffect = msg.item.effect;
+	//m_CurrentEffect = msg.item.effect;
 
 	CEntity* effect = EntityManager.GetEntity(m_Effect[m_CurrentEffect]);
 
@@ -84,7 +77,7 @@ void CItemEffect::StartEffect(CVector3 attackerPos,TEntityUID target,SMessage ms
 	attackerPos.y += 1;
 	effect->Matrix().SetPosition(attackerPos);
 //	effect->Matrix().FaceTarget(m_TargetPos);
-	m_MSG;
+	m_MSG = msg;
 }
 
 void CItemEffect::Reset()

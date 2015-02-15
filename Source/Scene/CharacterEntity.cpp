@@ -200,13 +200,6 @@ void CCharEntity::RandomAttack( SMessage msg )
 	else
 	{
 		Messenger.SendMessage( target, msg );
-		/*msg.type = Msg_Act;
-		msg.order++;
-		if(msg.order >= NumTotal)
-		{
-			msg.order = 0;
-		}
-		Messenger.SendMessage(AttackOrder[msg.order],msg);*/
 	}
 	m_State = Wait;
 }
@@ -363,17 +356,6 @@ void CCharEntity::WeaknessAttack( SMessage msg )
 			Messenger.SendMessage(target,msg);
 		}
 	}
-	// If the visual effects are not being used then they makse sure that the next character makes their move.
-	/*if(!effectOn)
-	{
-		msg.type = Msg_Act;
-		msg.order++;
-		if(msg.order >= NumTotal)
-		{
-			msg.order = 0;
-		}
-		Messenger.SendMessage(AttackOrder[msg.order],msg);
-	}*/
 	m_State = Wait;
 }
 // Attacks the target with the lowest current health, with the strongest attack that they have.
@@ -556,16 +538,6 @@ void CCharEntity::StrongestAttack( SMessage msg )
 			}
 		}
 	}
-	/*if(!effectOn)
-	{
-		msg.type = Msg_Act;
-		msg.order++;
-		if(msg.order >= NumTotal)
-		{
-			msg.order = 0;
-		}
-		Messenger.SendMessage(AttackOrder[msg.order],msg);
-	}*/
 	m_State = Wait;
 }
 
@@ -616,7 +588,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 	}
 	// Sets up extra damage done because of weaknesses. weaknessDamage is set to the negative of the attack damage so that it will equal 0 when added to the base damage
 	// if the character is not weak to the attack.
-	TFloat32 weaknessDamage = -msg.attack.damage;
+	TFloat32 weaknessDamage = 0;
 	for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
 	{
 		if ( msg.attack.element == (*it).element )
@@ -624,7 +596,7 @@ void CCharEntity::TakingDamage( SMessage msg )
 			weaknessDamage = msg.attack.damage * (*it).modifier;
 		}
 	}
-	m_CurrentHealth -= static_cast<TInt32>( (msg.attack.damage * defence) + (msg.attack.damage + weaknessDamage) );
+	m_CurrentHealth -= static_cast<TInt32>( (msg.attack.damage + weaknessDamage) * defence );
 }
 
 //The implementation of the update function for the character entities.
@@ -769,13 +741,13 @@ bool CCharEntity::Update( TFloat32 updateTime )
 		//Checking to see any limited time weaknesses are ready to be removed and decreaments the one that are not. Perminent weaknesses are set to below -50 so they don't get removed.
 		for( auto it = m_WeaknessList.begin(); it != m_WeaknessList.end(); it++ )
 		{
-			if ( (*it).turns > -50 && (*it).turns <= 0 )
-			{
-				m_WeaknessList.erase( it );
-			}
 			if ( (*it).turns > -50 )
 			{
 				(*it).turns--;
+				if ( (*it).turns <= 0 )
+				{
+					m_WeaknessList.erase( it );
+				}
 			}
 		}
 
@@ -783,30 +755,6 @@ bool CCharEntity::Update( TFloat32 updateTime )
 
 	if(m_State == Dead)
 	{
-		// Makes sure that the attacks continues.
-		/*if(effectOn)
-		{
-			if(attackEffect.getState() == Inactive)
-			{
-				msg.type = Msg_Act;
-				msg.order++;
-				if(msg.order >= NumTotal)
-				{
-					msg.order = 0;
-				}
-				Messenger.SendMessage(AttackOrder[msg.order],msg);
-			}
-		}
-		else
-		{
-			msg.type = Msg_Act;
-			msg.order++;
-			if(msg.order >= NumTotal)
-			{
-				msg.order = 0;
-			}
-			Messenger.SendMessage(AttackOrder[msg.order],msg);
-		}*/
 	}
 
 	return true;
@@ -853,7 +801,7 @@ bool CCharEntity::UseItem( SMessage msg )
 			{
 				TEntityUID current;
 				CCharEntity* hurt;
-				if ( m_CharTemplate->GetType() == "Ally" )
+				if ( m_CharTemplate->GetType() == "ally" )
 				{
 					current = LowestHealthAlly();
 					hurt = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
@@ -864,7 +812,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					hurt = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 
-				if ( hurt->GetCurrentHealth() < (hurt->m_CharTemplate->GetMaxHealth() * 0.1) )
+				if ( hurt->GetCurrentHealth() < (hurt->m_CharTemplate->GetMaxHealth() * 0.3) )
 				{
 					msg.type = Msg_HealthRestored;
 					msg.from = GetUID();
@@ -888,7 +836,7 @@ bool CCharEntity::UseItem( SMessage msg )
 			{
 				TEntityUID current;
 				CCharEntity* lowMagic;
-				if ( m_CharTemplate->GetType() == "Ally" )
+				if ( m_CharTemplate->GetType() == "ally" )
 				{
 					current = LowestMagicAlly();
 					lowMagic = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
@@ -899,7 +847,7 @@ bool CCharEntity::UseItem( SMessage msg )
 					lowMagic = static_cast<CCharEntity*>(EntityManager.GetEntity( current ));
 				}
 
-				if ( lowMagic->GetCurrentMagic() < (lowMagic->m_CharTemplate->GetMaxMagic() * 0.1) )
+				if ( lowMagic->GetCurrentMagic() < (lowMagic->m_CharTemplate->GetMaxMagic() * 0.3) )
 				{
 					msg.type = Msg_MagicRestored;
 					msg.from = GetUID();
@@ -920,7 +868,7 @@ bool CCharEntity::UseItem( SMessage msg )
 			else if ( m_Inventory[i].item.GetEffect() == revive )
 			{
 				TEntityUID target;
-				if ( m_CharTemplate->GetType() == "Enemy" )
+				if ( m_CharTemplate->GetType() == "enemy" )
 				{
 					target = DeadEnemy();
 				}

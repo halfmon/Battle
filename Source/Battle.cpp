@@ -1280,6 +1280,7 @@ void RenderSceneText( float updateTime )
 // Update the scene between rendering
 void UpdateScene( float updateTime )
 {
+	static int attackOrderPos;
 	// Call all entity update functions
 	EntityManager.UpdateAllEntities( updateTime );
 	attackEffect.Update( updateTime * effectSpeedModifier );
@@ -1293,8 +1294,7 @@ void UpdateScene( float updateTime )
 		SMessage msg;
 		msg.type = Msg_Act;
 		msg.from = SystemUID;
-		msg.order = 0;
-		Messenger.SendMessage( AttackOrder[msg.order], msg );
+		Messenger.SendMessage( AttackOrder[attackOrderPos], msg );
 		started = true;
 	}
 
@@ -1340,7 +1340,6 @@ void UpdateScene( float updateTime )
 		}
 	}
 
-	static int attackOrderPos;
 	if( started )
 	{
 		if( attackEffect.getState() == Inactive && itemEffect.getState() == InactiveI )
